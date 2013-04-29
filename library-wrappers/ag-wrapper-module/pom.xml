@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>library-wrappers</artifactId>
+        <groupId>org.modelinglab.actiongui.netbeans.wrappers</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>ag-wrapper-module</artifactId>
+
+    <packaging>nbm</packaging>
+
+    <name>ActionGUI Library Wrapper</name>
+
+    <properties>
+        <ag.version>2.0.1-SNAPSHOT</ag.version>
+    </properties>
+    
+    <dependencies>
+        <!-- Metamodels -->
+        <dependency>
+            <groupId>org.modelinglab.actiongui.mm</groupId>
+            <artifactId>agam</artifactId>
+            <version>${ag.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.modelinglab.actiongui.mm</groupId>
+            <artifactId>gtm</artifactId>
+            <version>${ag.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.modelinglab.actiongui.mm</groupId>
+            <artifactId>dtm</artifactId>
+            <version>${ag.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.modelinglab.actiongui.mm</groupId>
+            <artifactId>stm</artifactId>
+            <version>${ag.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.modelinglab.actiongui.mm</groupId>
+            <artifactId>jasfag</artifactId>
+            <version>${ag.version}</version>
+        </dependency>
+            
+        <!-- Tasks -->
+        <dependency>
+            <groupId>org.modelinglab.actiongui.tasks</groupId>
+            <artifactId>umlgen</artifactId>
+            <version>${ag.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.modelinglab.actiongui.tasks</groupId>
+            <artifactId>dtmparser</artifactId>
+            <version>${ag.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.modelinglab.actiongui.tasks</groupId>
+            <artifactId>dtmanalyzer</artifactId>
+            <version>${ag.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.modelinglab.actiongui.tasks</groupId>
+            <artifactId>stmparser</artifactId>
+            <version>${ag.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.modelinglab.actiongui.tasks</groupId>
+            <artifactId>stmanalyzer</artifactId>
+            <version>${ag.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.modelinglab.actiongui.tasks</groupId>
+            <artifactId>sdamgen</artifactId>
+            <version>${ag.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.modelinglab.actiongui.tasks</groupId>
+            <artifactId>gtmparser</artifactId>
+            <version>${ag.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.modelinglab.actiongui.tasks</groupId>
+            <artifactId>gtmmerge</artifactId>
+            <version>${ag.version}</version>
+        </dependency>    
+        <dependency>
+            <groupId>org.modelinglab.actiongui.tasks</groupId>
+            <artifactId>gtmanalyzer</artifactId>
+            <version>${ag.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.modelinglab.actiongui.tasks</groupId>
+            <artifactId>jasfaggen</artifactId>
+            <version>${ag.version}</version>
+        </dependency>
+            
+        <!-- VM -->
+        <dependency>
+            <groupId>org.modelinglab.actiongui.vm</groupId>
+            <artifactId>core</artifactId>
+            <version>${ag.version}</version>
+        </dependency>
+            
+        
+    </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>nbm-maven-plugin</artifactId>
+                <version>3.9</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publicPackages>
+                        <publicPackage>com.*</publicPackage>
+                        <publicPackage>org.*</publicPackage>
+                    </publicPackages>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -1,0 +1,87 @@
+Software Licensing Agreement 
+
+This Agreement is entered into by and between 
+
+ETH Zurich, 
+
+represented by Prof. Dr. David Basin, Universitätsstrasse 6
+
+8092 Zürich, Switzerland
+
+and
+
+Instituto IMDEA Software, 
+
+Campus de Montegancedo s/n
+
+28223 Pozuelo de Alarcon, Madrid, Spain
+
+(hereinafter referred to as "LICENSORS")
+
+and
+
+the Licensee 
+Preamble
+
+Certain research activities of the LICENSORS have resulted in the software product ACTIONGUI 2.
+
+WHEREAS LICENSEE is interested in having access to such ACTIONGUI 2. 
+
+WHEREAS LICENSORS are willing to license ACTIONGUI 2 or parts thereof against certain conditions;
+
+LICENSEE and LICENSORS hereby agree as follows:
+Article 1 - Definitions
+
+    "SOFTWARE" or "ACTIONGUI 2" is a software system developed under the supervision of David Basin and Manuel Clavel. It may be referenced as SOFTWARE in the following.
+        ACTIONGUI 2 is designed to model and generate security-aware data management applications. This software is further specified in http://www.actiongui.org.  Source code is not considered part of the SOFTWARE.
+        ACTIONGUI 2 uses the Open Source and/or Freeware Libraries specified in Appendix B. 
+    "EFFECTIVE DATE" shall mean the date on which the LICENSEE first got access to the SOFTWARE according to Article 3 or otherwise.
+
+Article 2 - License Grant
+
+    LICENSORS grants to LICENSEE a non-exclusive license for using the SOFTWARE as specified in Appendix A for use only by him/herself and for non-commercial purposes only. Explicitly excluded is
+        Modification or
+        Reproduction of the Software
+        Distribution or Sub-Licensing of the Software
+        Commercial use, such as, but not limited to using the Software to provide services or products to others and for which the Licensee is compensated in any manner (by payment of money or otherwise) or providing support of maintenance for the Software. 
+    LICENSEE shall adequately acknowledge IMDEA Software and ETH Zurich when referring to the copyright of ACTIONGUI 2. 
+
+Article 3 - Supply of ACTIONGUI 2 
+
+LICENSORS provide the SOFTWARE to LICENSEE under this Agreement via the following internet address: http://www.actiongui.org.
+Article 4 - Term
+The Agreement shall be effective as of EFFECTIVE DATE and is only valid for the version of the SOFTWARE specified in Article 1.
+ 
+Article 5 - Termination
+
+LICENSORS shall have the right to terminate this Agreement with immediate effect should LICENSEE violate any of the terms of this Agreement. Upon any termination of this Agreement by LICENSORS according to this Subsection, LICENSEE may be requested by LICENSORS to return to LICENSORS any ACTIONGUI 2 SOFTWARE delivered under this Agreement, including the entire documentation, without retaining any copy thereof.
+Article 6 - Amendments to Agreement
+
+The terms stipulated in this Agreement may not be modified in any way without the mutual consent of the parties in writing.
+Article 7 - Assignment
+
+LICENSEE may not assign its rights or obligations, or any part thereof under this Agreement to any third party without the prior written consent of LICENSORS.
+Article 8 - No Warranties 
+
+LICENSORS MAKE NO WARRANTIES, EXPRESS OR IMPLIED, WITH RESPECT TO THE ACTIONGUI 2, INCLUDING WITHOUT LIMITATION, ANY WARRANTIES AND/OR CONDITIONS OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE OR INFRINGEMENT OF THIRD PARTY RIGHTS. LICENSORS DO NOT WARRANT THAT THE FUNCTIONS CONTAINED IN THE ACTIONGUI 2 WILL MEET LICENSEE'S REQUIREMENTS, THAT THE OPERATION OF THE ACTIONGUI 2 SOFTWARE WILL BE UNINTERRUPTED OR ERROR-FREE OR THAT DEFECTS IN THE ACTIONGUI 2 SOFTWARE WILL BE CORRECTED. FURTHERMORE, LICENSORS DO NOT WARRANT OR MAKE ANY REPRESENTATIONS REGARDING THE USE OR THE RESULTS OF THE USE OF THE SOFTWARE IN TERMS OF CORRECTNESS, ACCURACY, RELIABILITY, OR OTHERWISE.
+Article 9 - Liability and Indemnity
+
+    LICENSEE expressly acknowledges and agrees that the use of the ACTIONGUI 2 SOFTWARE is at LICENSEE's sole risk.
+    LICENSORS disclaim all liabilities.  LICENSORS shall not have any liability for any direct or indirect damage except for those caused due to intent and gross negligence.
+
+Article 10 - Survival of Articles
+
+Articles 8 (Warranties) and 9 (Liability & Indemnity), shall survive the termination or expiration of this Agreement for any reason in addition to those articles surviving by operation of law.
+Article 11 - Legal Jurisdiction and Applicable Law
+
+This Agreement shall be governed by the laws of Switzerland. Any dispute arising from or in connection with this Agreement will be finally settled by the competent courts of the city of Zurich.
+
+LICENSEE indicates the acceptance of the terms of this Agreement by using the SOFTWARE
+
+Users are encouraged to register at http://www.actiongui.org, so that they can be informed of new versions.
+
+For commercial use of the Software please contact contact@actiongui.org.
+
+In case of any problems, comments, questions, please contact the authors using the E-mail address contact@actiongui.org.
+
+Visit http://www.actiongui.org for more detailed instructions about downloading and installing the Software package.
