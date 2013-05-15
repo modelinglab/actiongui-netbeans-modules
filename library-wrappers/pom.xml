@@ -4,7 +4,7 @@
     <parent>
         <artifactId>ag-netbeans-modules</artifactId>
         <groupId>org.modelinglab.actiongui.netbeans</groupId>
-        <version>0.1.1-SNAPSHOT</version>
+        <version>0.1.1</version>
     </parent>
     <groupId>org.modelinglab.actiongui.netbeans.wrappers</groupId>
     <artifactId>library-wrappers</artifactId>
