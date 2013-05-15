@@ -67,6 +67,7 @@ public enum GtmTokenId implements TokenId {
             case "TDateField":
             case "TImage":
             case "TLabel":
+            case "TPasswordField":
             case "TTable":
             case "TTextField":
             case "TUpload":

@@ -4,17 +4,15 @@
     <parent>
         <artifactId>ag-netbeans-modules</artifactId>
         <groupId>org.modelinglab.actiongui.netbeans</groupId>
-        <version>0.1.1-SNAPSHOT</version>
+        <version>1.0-SNAPSHOT</version>
     </parent>
-    <groupId>org.modelinglab.actiongui.netbeans.dtm</groupId>
-    <artifactId>dtm</artifactId>
+
+    <artifactId>stm</artifactId>
 
     <packaging>pom</packaging>
-
-    <name>ActionGUI DTM Modules</name>
-
+    <name>ActionGUI STM Modules</name>
   <modules>
-    <module>dtm-file</module>
-    <module>dtm-language</module>
+    <module>stm-file</module>
+    <module>stm-language</module>
   </modules>
 </project>
