@@ -21,17 +21,17 @@
         </properties>
     </action>
     <action>
-            <actionName>CUSTOM-nbm:autoupdate</actionName>
-            <displayName>nbm:autoupdate</displayName>
-            <goals>
-                <goal>nbm:autoupdate</goal>
-            </goals>
-        </action>
+        <actionName>CUSTOM-nbm:autoupdate</actionName>
+        <displayName>nbm:autoupdate</displayName>
+        <goals>
+            <goal>nbm:autoupdate</goal>
+        </goals>
+    </action>
     <action>
-            <actionName>CUSTOM-update versions</actionName>
-            <displayName>update versions</displayName>
-            <goals>
-                <goal>versions:update-child-modules</goal>
-            </goals>
-        </action>
+        <actionName>CUSTOM-update versions</actionName>
+        <displayName>update versions</displayName>
+        <goals>
+            <goal>versions:update-child-modules</goal>
+        </goals>
+    </action>
 </actions>

@@ -6,13 +6,13 @@
         <groupId>org.modelinglab.actiongui.netbeans</groupId>
         <version>0.1.2-SNAPSHOT</version>
     </parent>
-
+    <groupId>org.modelinglab.actiongui.netbeans.stm</groupId>
     <artifactId>stm</artifactId>
 
     <packaging>pom</packaging>
     <name>ActionGUI STM Modules</name>
-  <modules>
-    <module>stm-file</module>
-    <module>stm-language</module>
-  </modules>
+    <modules>
+        <module>stm-file</module>
+        <module>stm-language</module>
+    </modules>
 </project>
