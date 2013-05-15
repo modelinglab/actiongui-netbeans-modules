@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.modelinglab.actiongui.netbeans</groupId>
     <artifactId>ag-netbeans-modules</artifactId>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.1</version>
     <packaging>pom</packaging>
     <name>ActionGUI Netbeans Modules</name>
 
@@ -67,7 +67,7 @@
             <dependency>
                 <groupId>org.modelinglab.actiongui.netbeans.wrappers</groupId>
                 <artifactId>ag-wrapper-module</artifactId>
-                <version>0.1.1-SNAPSHOT</version>
+                <version>0.1.1</version>
             </dependency>
             
             <dependency>
