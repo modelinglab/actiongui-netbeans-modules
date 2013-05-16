@@ -13,9 +13,7 @@ import org.netbeans.api.lexer.TokenId;
 public enum DtmTokenId implements TokenId {
 
     ERROR,
-    ENTITY_NAME,
-    PROPERTY_NAME,
-    ENUM_LITERAL_NAME,
+    ID,
     KEYWORD,
     COMMENT,
     SEPARATOR,
@@ -58,12 +56,8 @@ public enum DtmTokenId implements TokenId {
             case "TCollectionType":
             case "TTupleType":
                 return TYPE;
-            case "TEnumLiteralName":
-                return ENUM_LITERAL_NAME;
-            case "TEntityName":
-                return ENTITY_NAME;
-            case "TPropertyName":
-                return PROPERTY_NAME;
+            case "TId":
+                return ID;
             
             case "TError":
             default:

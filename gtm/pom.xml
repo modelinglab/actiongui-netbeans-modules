@@ -4,7 +4,7 @@
     <parent>
         <artifactId>ag-netbeans-modules</artifactId>
         <groupId>org.modelinglab.actiongui.netbeans</groupId>
-        <version>0.1.1</version>
+        <version>0.1.2</version>
     </parent>
     <groupId>org.modelinglab.actiongui.netbeans.gtm</groupId>
     <artifactId>gtm</artifactId>
@@ -15,5 +15,6 @@
     <modules>
         <module>gtm-file</module>
         <module>gtm-language</module>
+        <module>gtm-braces-matcher</module>
     </modules>
 </project>

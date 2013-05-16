@@ -4,15 +4,16 @@
     <parent>
         <artifactId>ag-netbeans-modules</artifactId>
         <groupId>org.modelinglab.actiongui.netbeans</groupId>
-        <version>0.1.1</version>
+        <version>0.1.2</version>
     </parent>
-
+    <groupId>org.modelinglab.actiongui.netbeans.stm</groupId>
     <artifactId>stm</artifactId>
 
     <packaging>pom</packaging>
     <name>ActionGUI STM Modules</name>
-  <modules>
-    <module>stm-file</module>
-    <module>stm-language</module>
-  </modules>
+    <modules>
+        <module>stm-file</module>
+        <module>stm-language</module>
+        <module>stm-braces-matcher</module>
+    </modules>
 </project>

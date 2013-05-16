@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.modelinglab.actiongui.netbeans</groupId>
     <artifactId>ag-netbeans-modules</artifactId>
-    <version>0.1.1</version>
+    <version>0.1.2</version>
     <packaging>pom</packaging>
     <name>ActionGUI Netbeans Modules</name>
 
@@ -67,7 +67,7 @@
             <dependency>
                 <groupId>org.modelinglab.actiongui.netbeans.wrappers</groupId>
                 <artifactId>ag-wrapper-module</artifactId>
-                <version>0.1.1</version>
+                <version>0.1.2</version>
             </dependency>
             
             <dependency>
@@ -152,6 +152,12 @@
                 <!-- XXX: gortiz: added by hand. Needed to compile GtmLanguage with @LanguageRegistration -->
                 <groupId>org.netbeans.modules</groupId>
                 <artifactId>org-netbeans-modules-editor-errorstripe</artifactId>
+                <version>${netbeans.platform.version}</version>
+                <type>jar</type>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-netbeans-modules-editor-bracesmatching</artifactId>
                 <version>${netbeans.platform.version}</version>
                 <type>jar</type>
             </dependency>

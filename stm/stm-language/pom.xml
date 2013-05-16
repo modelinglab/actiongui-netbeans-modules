@@ -3,8 +3,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>stm</artifactId>
-        <groupId>org.modelinglab.actiongui.netbeans</groupId>
-        <version>0.1.1</version>
+        <groupId>org.modelinglab.actiongui.netbeans.stm</groupId>
+        <version>0.1.2</version>
     </parent>
 
     <artifactId>stm-language</artifactId>
