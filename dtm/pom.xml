@@ -13,8 +13,9 @@
 
     <name>ActionGUI DTM Modules</name>
 
-  <modules>
-    <module>dtm-file</module>
-    <module>dtm-language</module>
-  </modules>
+    <modules>
+        <module>dtm-file</module>
+        <module>dtm-language</module>
+        <module>dtm-braces-matcher</module>
+    </modules>
 </project>

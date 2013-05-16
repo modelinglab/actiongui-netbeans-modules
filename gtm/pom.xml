@@ -15,5 +15,6 @@
     <modules>
         <module>gtm-file</module>
         <module>gtm-language</module>
+        <module>gtm-braces-matcher</module>
     </modules>
 </project>

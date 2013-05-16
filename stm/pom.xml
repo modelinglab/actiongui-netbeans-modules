@@ -14,5 +14,6 @@
     <modules>
         <module>stm-file</module>
         <module>stm-language</module>
+        <module>stm-braces-matcher</module>
     </modules>
 </project>
