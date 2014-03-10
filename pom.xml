@@ -38,7 +38,7 @@
         <repository>
             <id>imdea.modeling.public</id>
             <name>IMDEA Modeling Public</name>
-            <url>http://modeling.imdeasoftware.org/nexus/content/groups/public/</url>                                                                                                                                               
+            <url>http://actiongui.org/nexus/content/groups/public/</url>                                                                                                                                               
             <releases>                                                                                                                                                                                                              
                 <enabled>true</enabled>                                                                                                                                                                                             
             </releases>                                                                                                                                                                                                             
@@ -52,7 +52,7 @@
         <pluginRepository>                                                                                                                                                                                                          
             <id>imdea.modeling.public</id>
             <name>IMDEA Modeling Public</name>
-            <url>http://modeling.imdeasoftware.org/nexus/content/groups/public/</url>
+            <url>http://actiongui.org/nexus/content/groups/public/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
