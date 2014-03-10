@@ -62,6 +62,20 @@
         </pluginRepository>
     </pluginRepositories>
 
+    <!-- For actiongui.org server --> 
+    <distributionManagement>
+        <repository>
+            <id>actiongui.releases</id>
+            <name>ActionGUI Public Releases</name>
+            <url>http://actiongui.org/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>actiongui.snapshots</id>
+            <name>ActionGUI Public Snapshots</name>
+            <url>http://actiongui.org/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement> 
+
     <dependencyManagement>
         <dependencies>
             <dependency>
