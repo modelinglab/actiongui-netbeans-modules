@@ -15,5 +15,6 @@
         <module>stm-file</module>
         <module>stm-language</module>
         <module>stm-braces-matcher</module>
-    </modules>
+    <module>stm-ocl-autocompletion</module>
+  </modules>
 </project>
