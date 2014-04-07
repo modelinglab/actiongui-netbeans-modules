@@ -1,2 +1,2 @@
 Manifest-Version: 1.0
-OpenIDE-Module-Localizing-Bundle: org/modelinglab/actiongui/netbeans/dtm/file/Bundle.properties
+OpenIDE-Module-Localizing-Bundle: org/modeliglab/actiongui/netbeans/gtm/braces/matcher/Bundle.properties
