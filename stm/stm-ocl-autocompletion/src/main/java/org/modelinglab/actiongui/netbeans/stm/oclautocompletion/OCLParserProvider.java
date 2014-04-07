@@ -247,9 +247,20 @@ public class OCLParserProvider {
     private void addValueVariable(StmPermission permission, UmlClass entity, OclParser oclParser, int caretOffset) {
         StaticEnvironment env = oclParser.getEnv();
         Classifier valueType = null;
-        Set<StmAction> actions = permission.getActions();
-        for (StmAction stmAction : actions) {
-            
+        Set<StmAuthorizationConstraint> authorizationConstraints = permission.getAuthorizationConstraints();
+        StmAuthorizationConstraint authorizationConstraint = null;
+        for (StmAuthorizationConstraint stmAuthorizationConstraint : authorizationConstraints) {
+            int start = stmAuthorizationConstraint.getStartPosition().getOffset();
+            int end = stmAuthorizationConstraint.getEndPosition().getOffset();
+            if(caretOffset >= start && caretOffset <= end) {
+                authorizationConstraint = stmAuthorizationConstraint;
+                break;
+            }
+        }
+        assert authorizationConstraint != null;
+        
+        Set<StmAction> constrainedActions = authorizationConstraint.getConstrainedActions();
+        for (StmAction stmAction : constrainedActions) {
             KindOfAction kindOfAction = stmAction.getKindOfAction();
             if(kindOfAction != KindOfAction.UPDATE) {
                 continue;
@@ -257,13 +268,6 @@ public class OCLParserProvider {
             
             ElementIdDeclaration resource = stmAction.getResource();
             if(resource == null) {
-                continue;
-            }
-            
-            StmAuthorizationConstraint authorizationConstraint = stmAction.getAuthorizationConstraint();
-            int start = authorizationConstraint.getStartPosition().getOffset();
-            int end = authorizationConstraint.getEndPosition().getOffset();
-            if(caretOffset <= start || caretOffset >= end) {
                 continue;
             }
             
@@ -320,9 +324,20 @@ public class OCLParserProvider {
     private void addTargetVariable(StmPermission permission, UmlClass entity, OclParser oclParser, int caretOffset) {
         StaticEnvironment env = oclParser.getEnv();
         Classifier targetType = null;
-        Set<StmAction> actions = permission.getActions();
-        for (StmAction stmAction : actions) {
-            
+        Set<StmAuthorizationConstraint> authorizationConstraints = permission.getAuthorizationConstraints();
+        StmAuthorizationConstraint authorizationConstraint = null;
+        for (StmAuthorizationConstraint stmAuthorizationConstraint : authorizationConstraints) {
+            int start = stmAuthorizationConstraint.getStartPosition().getOffset();
+            int end = stmAuthorizationConstraint.getEndPosition().getOffset();
+            if(caretOffset >= start && caretOffset <= end) {
+                authorizationConstraint = stmAuthorizationConstraint;
+                break;
+            }
+        }
+        assert authorizationConstraint != null;
+        
+        Set<StmAction> constrainedActions = authorizationConstraint.getConstrainedActions();
+        for (StmAction stmAction : constrainedActions) {
             KindOfAction kindOfAction = stmAction.getKindOfAction();
             if(kindOfAction != KindOfAction.ADD || kindOfAction != KindOfAction.REMOVE) {
                 continue;
@@ -330,13 +345,6 @@ public class OCLParserProvider {
             
             ElementIdDeclaration resource = stmAction.getResource();
             if(resource == null) {
-                continue;
-            }
-            
-            StmAuthorizationConstraint authorizationConstraint = stmAction.getAuthorizationConstraint();
-            int start = authorizationConstraint.getStartPosition().getOffset();
-            int end = authorizationConstraint.getEndPosition().getOffset();
-            if(caretOffset <= start || caretOffset >= end) {
                 continue;
             }
             
