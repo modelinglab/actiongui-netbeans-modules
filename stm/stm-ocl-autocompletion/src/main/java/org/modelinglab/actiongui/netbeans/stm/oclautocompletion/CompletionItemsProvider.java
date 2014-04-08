@@ -69,7 +69,7 @@ public class CompletionItemsProvider {
                 break;
             }
             case INIT_EXPR: {
-                completionItems = buildInitExprCompletionItems(sourceExpr, accumulator, parser, caretOffset, state);
+                completionItems = buildInitExprCompletionItems(accumulator, parser, caretOffset, state);
                 break;
             }
         }
@@ -343,8 +343,9 @@ public class CompletionItemsProvider {
         return completionItems;
     }
 
-    private static Collection<CompletionItem> buildInitExprCompletionItems(OclExpression sourceExpr, String accumulator, OclParser parser, int caretOffset, STMOCLCompletionState state) {
+    private static Collection<CompletionItem> buildInitExprCompletionItems(String accumulator, OclParser parser, int caretOffset, STMOCLCompletionState state) {
         Collection<CompletionItem> completionItems = new ArrayList<>();
+        
         return completionItems;
     }
 }

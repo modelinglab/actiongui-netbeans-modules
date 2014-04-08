@@ -7,14 +7,17 @@
 package org.modelinglab.actiongui.netbeans.stm.oclautocompletion;
 
 import com.meaningfulmodels.actiongui.vm.core.IsUserAnnotation;
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import org.modelinglab.actiongui.core.DefaultImplicitTypesProvider;
 import org.modelinglab.actiongui.maven.tools.AGMavenInterface;
@@ -28,7 +31,6 @@ import org.modelinglab.actiongui.mm.stm.StmRole;
 import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.exceptions.STMAutocompletionException;
 import org.modelinglab.actiongui.tasks.stmparser.StmParser;
 import org.modelinglab.actiongui.tasks.stmparser.StmParserRequest;
-import org.modelinglab.mm.source.SourceElement;
 import org.modelinglab.mm.source.SourceElement.ElementIdDeclaration;
 import org.modelinglab.mm.source.SourceError;
 import org.modelinglab.mm.source.SourceTaskResult;
@@ -47,6 +49,7 @@ import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataObject;
+import org.openide.util.Exceptions;
 import org.openide.windows.TopComponent;
 
 /**
@@ -103,7 +106,7 @@ public class OCLParserProvider {
         // 2) Parse the document to get a stm (secure text model)
         Stm stm;
         try {
-            stm = parseDocument();
+            stm = parseDocument(document);
         } 
         catch (STMAutocompletionException ex) {
             throw new STMAutocompletionException("Error parsing the current security file:" + ex.getMessage());
@@ -140,10 +143,7 @@ public class OCLParserProvider {
         try {
             namespace = agmi.unserializeNamespace(datamodelFO.getInputStream());
         } 
-        catch (FileNotFoundException ex) {
-            throw new STMAutocompletionException(ex.getMessage());
-        } 
-        catch (AGMavenInterface.AGMavenInterfaceException ex) {
+        catch (FileNotFoundException | AGMavenInterface.AGMavenInterfaceException ex) {
             throw new STMAutocompletionException(ex.getMessage());
         }
         
@@ -490,14 +490,24 @@ public class OCLParserProvider {
     }
     */
     
-    private Stm parseDocument() throws STMAutocompletionException {
+    private Stm parseDocument(Document document) throws STMAutocompletionException {
         // get URI from activated stm document
         DataObject dob = TopComponent.getRegistry().getActivated().getLookup().lookup(DataObject.class);
         FileObject fob = dob.getPrimaryFile();
         URI uri = fob.toURI();
         
+        // get the text
+        String text;
+        try {
+            // get the input stream
+            text = document.getText(0, document.getLength());
+        } 
+        catch (BadLocationException ex) {
+            throw new STMAutocompletionException(ex.getMessage());
+        }
+        
         // parse the document
-        StmParserRequest stmParserRequest = new StmParserRequest(uri);
+        StmParserRequest stmParserRequest = new StmParserRequest(uri,text);
         StmParser stmParser = new StmParser(stmParserRequest);
         SourceTaskResult<Stm, Stm> stmParserResult;
         try {
