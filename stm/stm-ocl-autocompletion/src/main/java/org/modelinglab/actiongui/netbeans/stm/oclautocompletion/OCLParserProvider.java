@@ -214,12 +214,33 @@ public class OCLParserProvider {
         if (permission == null) {
             throw new STMAutocompletionException("The authorization constraint is not declared within a permission.");
         }
-        UmlClass selfType = addSelfVariable(permission, oclParser);
+        UmlClass selfType = addSelfVariable(permission, oclParser, caretOffset);
         addValueVariable(permission, selfType, oclParser, caretOffset);
         addTargetVariable(permission, selfType, oclParser, caretOffset);    
     }
 
-    private UmlClass addSelfVariable(StmPermission permission, OclParser oclParser) throws STMAutocompletionException {
+    private UmlClass addSelfVariable(StmPermission permission, OclParser oclParser, int caretOffset) throws STMAutocompletionException {
+        // 1) Check the actions constrained do not include a create action
+        Set<StmAuthorizationConstraint> authorizationConstraints = permission.getAuthorizationConstraints();
+        StmAuthorizationConstraint authorizationConstraint = null;
+        for (StmAuthorizationConstraint stmAuthorizationConstraint : authorizationConstraints) {
+            int start = stmAuthorizationConstraint.getStartPosition().getOffset();
+            int end = stmAuthorizationConstraint.getEndPosition().getOffset();
+            if(caretOffset >= start && caretOffset <= end) {
+                authorizationConstraint = stmAuthorizationConstraint;
+                break;
+            }
+        }
+        assert authorizationConstraint != null;
+        Set<StmAction> constrainedActions = authorizationConstraint.getConstrainedActions();
+        for (StmAction stmAction : constrainedActions) {
+            KindOfAction kindOfAction = stmAction.getKindOfAction();
+            if(kindOfAction == KindOfAction.CREATE) {
+                return null;
+            }
+        }
+        
+        // 2) Get the type of the self variable and create the variable
         String name = permission.getIdDeclaration().getId();      
         Element element = oclParser.getEnv().lookup(name);
         if (element == null) {
@@ -245,6 +266,10 @@ public class OCLParserProvider {
      * @param caretOffset 
      */
     private void addValueVariable(StmPermission permission, UmlClass entity, OclParser oclParser, int caretOffset) {
+        if(entity == null) {
+            return;
+        }
+        
         StaticEnvironment env = oclParser.getEnv();
         Classifier valueType = null;
         Set<StmAuthorizationConstraint> authorizationConstraints = permission.getAuthorizationConstraints();
@@ -322,6 +347,10 @@ public class OCLParserProvider {
      * @param caretOffset 
      */ 
     private void addTargetVariable(StmPermission permission, UmlClass entity, OclParser oclParser, int caretOffset) {
+        if (entity == null) {
+            return;
+        }
+        
         StaticEnvironment env = oclParser.getEnv();
         Classifier targetType = null;
         Set<StmAuthorizationConstraint> authorizationConstraints = permission.getAuthorizationConstraints();
