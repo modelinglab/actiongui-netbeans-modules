@@ -13,13 +13,13 @@ import javax.swing.text.JTextComponent;
  *
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-public class OCLIteratorCompletionItem extends STMOCLCompletionItem{
+public class STMOCLIteratorCompletionItem extends STMOCLCompletionItem{
 
     private final String nameIterator;
     private final String returnedType;
     private final String bodyType;
 
-    public OCLIteratorCompletionItem(String nameIterator, String returnedType, String bodyType, String prefix, int caretOffset) {
+    public STMOCLIteratorCompletionItem(String nameIterator, String returnedType, String bodyType, String prefix, int caretOffset) {
         super(prefix, caretOffset);
         assert nameIterator.startsWith(prefix);
         this.nameIterator = nameIterator;

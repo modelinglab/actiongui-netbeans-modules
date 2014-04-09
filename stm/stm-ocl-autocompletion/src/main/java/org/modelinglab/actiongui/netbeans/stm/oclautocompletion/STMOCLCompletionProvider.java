@@ -13,6 +13,7 @@ import javax.swing.text.Document;
 import javax.swing.text.Element;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.StyledDocument;
+import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems.STMOCLErrorCompletionItem;
 import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.exceptions.STMAutocompletionException;
 import org.modelinglab.ocl.core.ast.expressions.OclExpression;
 import org.modelinglab.ocl.core.exceptions.OclException;
@@ -26,7 +27,6 @@ import org.netbeans.spi.editor.completion.CompletionResultSet;
 import org.netbeans.spi.editor.completion.CompletionTask;
 import org.netbeans.spi.editor.completion.support.AsyncCompletionQuery;
 import org.netbeans.spi.editor.completion.support.AsyncCompletionTask;
-import org.openide.util.Exceptions;
 
 /**
  *
@@ -51,14 +51,17 @@ public class STMOCLCompletionProvider implements CompletionProvider{
                     validPosition = isValidPosition(document, caretOffset);
                 } 
                 catch (BadLocationException ex) {
-                    //Exceptions.printStackTrace(ex);
+                    String errorMessage = "OCL auto-completion is disabled: " + ex.getMessage();
+                    STMOCLErrorCompletionItem item = new STMOCLErrorCompletionItem(null, caretOffset, errorMessage);
+                    completionResultSet.addItem(item);
                     completionResultSet.finish();
                     return;
                 }
                 
                 if (!validPosition) {
-                    //JOptionPane.showMessageDialog(jtc, "OCL auto-completion feaure is enabled only when an " +
-                    //    "authorization constraint is being defined (i.e between '[' and ']').");
+                    String errorMessage = "OCL auto-completion is disabled: the caret position must be within square brackets '[' and ']'.";
+                    STMOCLErrorCompletionItem item = new STMOCLErrorCompletionItem(null, caretOffset, errorMessage);
+                    completionResultSet.addItem(item);
                     completionResultSet.finish();
                     return;
                 }                                
@@ -70,6 +73,9 @@ public class STMOCLCompletionProvider implements CompletionProvider{
                     parser = oclParserProvider.getParser(document, caretOffset);
                 } 
                 catch (STMAutocompletionException ex) {
+                    String errorMessage = "OCL auto-completion is disabled: " + ex.getMessage();
+                    STMOCLErrorCompletionItem item = new STMOCLErrorCompletionItem(null, caretOffset, errorMessage);
+                    completionResultSet.addItem(item);
                     completionResultSet.finish();
                     return;
                 }
@@ -80,6 +86,9 @@ public class STMOCLCompletionProvider implements CompletionProvider{
                     completionItems = buildCompletionItems(document, caretOffset, parser);
                 }
                 catch (BadLocationException ex) {
+                    String errorMessage = "OCL auto-completion is disabled: " + ex.getMessage();
+                    STMOCLErrorCompletionItem item = new STMOCLErrorCompletionItem(null, caretOffset, errorMessage);
+                    completionResultSet.addItem(item);
                     completionResultSet.finish();
                     return;
                 }

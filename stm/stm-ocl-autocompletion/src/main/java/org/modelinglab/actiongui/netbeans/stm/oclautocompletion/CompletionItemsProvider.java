@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems.OCLIteratorCompletionItem;
+import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems.STMOCLIteratorCompletionItem;
 import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems.STMOCLDotOrArrowOperationCompletionItem;
 import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems.STMOCLOtherOperationCompletionItem;
 import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems.STMOCLPropertyCompletionItem;
@@ -159,7 +159,7 @@ public class CompletionItemsProvider {
         return true;
     }
     
-    private static OCLIteratorCompletionItem buildOCLIteratorCompletionItem(String nameIterator, CollectionType sourceType, String prefix, int caretOffset) throws STMAutocompletionException {
+    private static STMOCLIteratorCompletionItem buildOCLIteratorCompletionItem(String nameIterator, CollectionType sourceType, String prefix, int caretOffset) throws STMAutocompletionException {
         String returnedType = null;
         String bodyType = null;
         switch(nameIterator){
@@ -205,7 +205,7 @@ public class CompletionItemsProvider {
                 throw new STMAutocompletionException("The autocompletion feature can not handle the iterator '" + nameIterator +"'");
             }
         }
-        OCLIteratorCompletionItem item = new OCLIteratorCompletionItem(nameIterator, returnedType, bodyType, prefix, caretOffset);
+        STMOCLIteratorCompletionItem item = new STMOCLIteratorCompletionItem(nameIterator, returnedType, bodyType, prefix, caretOffset);
         return item;
     }
 
@@ -297,7 +297,7 @@ public class CompletionItemsProvider {
                 if(!name.startsWith(accumulator)) {
                     continue;
                 }
-                OCLIteratorCompletionItem item;
+                STMOCLIteratorCompletionItem item;
                 try {
                     item = buildOCLIteratorCompletionItem(name, sourceType, accumulator, caretOffset);
                     completionItems.add(item);

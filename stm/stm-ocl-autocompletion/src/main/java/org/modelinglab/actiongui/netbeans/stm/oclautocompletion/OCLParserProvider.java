@@ -104,13 +104,7 @@ public class OCLParserProvider {
         }
         
         // 2) Parse the document to get a stm (secure text model)
-        Stm stm;
-        try {
-            stm = parseDocument(document);
-        } 
-        catch (STMAutocompletionException ex) {
-            throw new STMAutocompletionException("Error parsing the current security file:" + ex.getMessage());
-        }
+        Stm stm = parseDocument(document);
         
         // 3) Get the ocl parser
         Date newModified = datamodelFO.lastModified();
@@ -548,9 +542,22 @@ public class OCLParserProvider {
 
         Collection<SourceError<Stm>> stmParserErrors = stmParserResult.getErrors();
         if (!stmParserErrors.isEmpty()) {
-            throw new STMAutocompletionException("There are errors parsing the security model file '" + uri.toString() + "'");
+            SourceError<Stm> sourceError = stmParserErrors.iterator().next();           
+            StringBuilder sb = new StringBuilder("Error parsing the security model at ");
+            if (sourceError.getErrorSection() == null) {
+                sb.append("[Undefined section] ");
+            }
+            else {
+                sb.append("[");
+                sb.append(sourceError.getErrorSection().getStartPosition().getLine());
+                sb.append(',');
+                sb.append(sourceError.getErrorSection().getStartPosition().getColumn());
+                sb.append("]");
+            }
+            sb.append(": ").append(sourceError.getErrorMsg());
+            throw new STMAutocompletionException(sb.toString());
         }
-
+        
         Stm stm = stmParserResult.getOutput();
         return stm;
     }
