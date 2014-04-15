@@ -18,13 +18,15 @@ public class STMOCLIteratorCompletionItem extends STMOCLCompletionItem{
     private final String nameIterator;
     private final String returnedType;
     private final String bodyType;
+    private final String nameItVar;
 
-    public STMOCLIteratorCompletionItem(String nameIterator, String returnedType, String bodyType, String prefix, int caretOffset) {
+    public STMOCLIteratorCompletionItem(String nameIterator, String returnedType, String bodyType, String prefix, int caretOffset, String nameItVar) {
         super(prefix, caretOffset);
         assert nameIterator.startsWith(prefix);
         this.nameIterator = nameIterator;
         this.returnedType = returnedType;
         this.bodyType = bodyType;
+        this.nameItVar = nameItVar;
     }        
 
     @Override
@@ -44,7 +46,7 @@ public class STMOCLIteratorCompletionItem extends STMOCLCompletionItem{
     
     @Override
     protected String getTextToInsert() {
-        String textToInsert = nameIterator + "(v|body)";
+        String textToInsert = nameIterator + "(" + nameItVar + "|body)";
         return textToInsert;
     }
     

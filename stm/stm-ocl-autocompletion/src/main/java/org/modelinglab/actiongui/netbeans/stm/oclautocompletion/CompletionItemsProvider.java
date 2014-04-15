@@ -159,7 +159,7 @@ public class CompletionItemsProvider {
         return true;
     }
     
-    private static STMOCLIteratorCompletionItem buildOCLIteratorCompletionItem(String nameIterator, CollectionType sourceType, String prefix, int caretOffset) throws STMAutocompletionException {
+    private static STMOCLIteratorCompletionItem buildOCLIteratorCompletionItem(String nameIterator, CollectionType sourceType, String prefix, int caretOffset, OclParser parser) throws STMAutocompletionException {
         String returnedType = null;
         String bodyType = null;
         switch(nameIterator){
@@ -205,7 +205,9 @@ public class CompletionItemsProvider {
                 throw new STMAutocompletionException("The autocompletion feature can not handle the iterator '" + nameIterator +"'");
             }
         }
-        STMOCLIteratorCompletionItem item = new STMOCLIteratorCompletionItem(nameIterator, returnedType, bodyType, prefix, caretOffset);
+        // get the next free default variable
+        String nameItVar = STMOCLCompletionUtils.getNextFreeVar(parser);
+        STMOCLIteratorCompletionItem item = new STMOCLIteratorCompletionItem(nameIterator, returnedType, bodyType, prefix, caretOffset, nameItVar);
         return item;
     }
 
@@ -299,7 +301,7 @@ public class CompletionItemsProvider {
                 }
                 STMOCLIteratorCompletionItem item;
                 try {
-                    item = buildOCLIteratorCompletionItem(name, sourceType, accumulator, caretOffset);
+                    item = buildOCLIteratorCompletionItem(name, sourceType, accumulator, caretOffset, parser);
                     completionItems.add(item);
                 }
                 catch (STMAutocompletionException ex) {
