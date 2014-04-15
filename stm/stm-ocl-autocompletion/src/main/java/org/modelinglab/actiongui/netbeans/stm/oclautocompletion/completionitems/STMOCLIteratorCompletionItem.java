@@ -64,7 +64,7 @@ public class STMOCLIteratorCompletionItem extends STMOCLCompletionItem{
     @Override
     protected void setCaretOffset(JTextComponent component) {
         // set the caret position in the body of the iterator, just after the '|'
-        component.setCaretPosition(caretOffset - prefix.length() + nameIterator.length() + 3);
+        component.setCaretPosition(caretOffset - prefix.length() + nameIterator.length() + nameItVar.length() + 2);
     }
 
     @Override
