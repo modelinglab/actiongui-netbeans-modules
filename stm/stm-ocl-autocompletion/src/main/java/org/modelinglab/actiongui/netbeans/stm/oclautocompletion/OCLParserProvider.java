@@ -50,6 +50,7 @@ import org.modelinglab.ocl.core.ast.expressions.OclExpression;
 import org.modelinglab.ocl.core.ast.expressions.TypeExp;
 import org.modelinglab.ocl.core.ast.expressions.Variable;
 import org.modelinglab.ocl.core.ast.types.Classifier;
+import org.modelinglab.ocl.core.ast.types.CollectionType;
 import org.modelinglab.ocl.core.exceptions.OclException;
 import org.modelinglab.ocl.parser.OclLexerException;
 import org.modelinglab.ocl.parser.OclParser;
@@ -783,8 +784,18 @@ public class OCLParserProvider {
             catch(Exception ex) {
                 return null;
             }
+            Classifier type = sourceExpr.getType();
+            CollectionType collectionType;
+            // if type of source exp is not a collection --> skip
+            try {
+                collectionType = (CollectionType)type;
+            }
+            catch(Exception ex) {
+                return null;
+            }
+            
             String nameVar = var.getName().toString().trim();           
-            Classifier typeVar = sourceExpr.getType();
+            Classifier typeVar = collectionType.getElementType();
             Variable variable = new Variable(nameVar);
             variable.setType(typeVar);
             return variable;
