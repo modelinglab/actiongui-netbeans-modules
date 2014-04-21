@@ -7,6 +7,7 @@
 package org.modelinglab.actiongui.netbeans.stm.oclautocompletion;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.Collection;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
@@ -20,12 +21,17 @@ import org.modelinglab.ocl.parser.OclLexerException;
 import org.modelinglab.ocl.parser.OclParser;
 import org.modelinglab.ocl.parser.OclParserException;
 import org.netbeans.api.editor.mimelookup.MimeRegistration;
+import org.netbeans.api.project.FileOwnerQuery;
+import org.netbeans.api.project.Project;
 import org.netbeans.spi.editor.completion.CompletionItem;
 import org.netbeans.spi.editor.completion.CompletionProvider;
 import org.netbeans.spi.editor.completion.CompletionResultSet;
 import org.netbeans.spi.editor.completion.CompletionTask;
 import org.netbeans.spi.editor.completion.support.AsyncCompletionQuery;
 import org.netbeans.spi.editor.completion.support.AsyncCompletionTask;
+import org.openide.filesystems.FileObject;
+import org.openide.loaders.DataObject;
+import org.openide.windows.TopComponent;
 
 /**
  *
@@ -66,14 +72,53 @@ public class STMOCLCompletionProvider implements CompletionProvider{
                 }                                
                 
                 // 2) Get the OCL parser.
+                // 2.1) Get the data model URI
+                Project p = TopComponent.getRegistry().getActivated().getLookup().lookup(Project.class);
+                if (p == null) {
+                    DataObject dob = TopComponent.getRegistry().getActivated().getLookup().lookup(DataObject.class);
+                    if (dob != null) {
+                        FileObject fo = dob.getPrimaryFile();
+                        p = FileOwnerQuery.getOwner(fo);
+                    }
+                }
+                FileObject projectDirectory = p.getProjectDirectory();
+                if(projectDirectory == null){
+                    String errorMessage = "Error getting the current project";
+                    STMOCLErrorCompletionItem item = new STMOCLErrorCompletionItem(null, caretOffset, errorMessage);
+                    completionResultSet.addItem(item);
+                    completionResultSet.finish();
+                    return;
+                }
+                FileObject parent = projectDirectory.getParent();
+                if(parent == null) {
+                    String errorMessage = "Error getting the parent project of the current project";
+                    STMOCLErrorCompletionItem item = new STMOCLErrorCompletionItem(null, caretOffset, errorMessage);
+                    completionResultSet.addItem(item);
+                    completionResultSet.finish();
+                    return;
+                }
+                FileObject datamodelFO = parent.getFileObject("dtm/target/classes/umlclasses.xml");
+                if(datamodelFO == null) {
+                    String errorMessage = "Error getting the application data model";
+                    STMOCLErrorCompletionItem item = new STMOCLErrorCompletionItem(null, caretOffset, errorMessage);
+                    completionResultSet.addItem(item);
+                    completionResultSet.finish();
+                    return;
+                }
+                URI datamodelURI = datamodelFO.toURI();
+                // 2.2) Get the security model URI
+                DataObject dob = TopComponent.getRegistry().getActivated().getLookup().lookup(DataObject.class);
+                FileObject fob = dob.getPrimaryFile();
+                URI securitymodelURI = fob.toURI();
+
+                // 2.3) Obtain the OCL parser
                 OCLParserProvider oclParserProvider = OCLParserProvider.getInstance();
                 OclParser parser;
                 try {
-                    parser = oclParserProvider.getParser(document, caretOffset);
+                    parser = oclParserProvider.getParser(datamodelURI, securitymodelURI, document, caretOffset);
                 } 
                 catch (STMAutocompletionException ex) {
-                    String errorMessage = "OCL auto-completion is disabled: " + ex.getMessage();
-                    STMOCLErrorCompletionItem item = new STMOCLErrorCompletionItem(null, caretOffset, errorMessage);
+                    STMOCLErrorCompletionItem item = new STMOCLErrorCompletionItem(null, caretOffset, ex.getMessage());
                     completionResultSet.addItem(item);
                     completionResultSet.finish();
                     return;
@@ -85,8 +130,7 @@ public class STMOCLCompletionProvider implements CompletionProvider{
                     completionItems = buildCompletionItems(document, caretOffset, parser);
                 }
                 catch (BadLocationException ex) {
-                    String errorMessage = "OCL auto-completion is disabled: " + ex.getMessage();
-                    STMOCLErrorCompletionItem item = new STMOCLErrorCompletionItem(null, caretOffset, errorMessage);
+                    STMOCLErrorCompletionItem item = new STMOCLErrorCompletionItem(null, caretOffset, ex.getMessage());
                     completionResultSet.addItem(item);
                     completionResultSet.finish();
                     return;

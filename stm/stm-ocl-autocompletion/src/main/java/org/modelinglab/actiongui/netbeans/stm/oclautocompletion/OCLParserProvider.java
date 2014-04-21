@@ -7,6 +7,7 @@
 package org.modelinglab.actiongui.netbeans.stm.oclautocompletion;
 
 import com.meaningfulmodels.actiongui.vm.core.IsUserAnnotation;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PushbackReader;
@@ -15,11 +16,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 import java.util.Set;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
@@ -78,24 +77,21 @@ import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataObject;
+import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 
 /**
- * This class contains an OCL parser (with its context), for each AG application in which the auto-completion is used.
+ * This class obtains an OCL parser each time the auto-completion is activated.
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
 public class OCLParserProvider {
     private static OCLParserProvider instance;
-    private final Map<String,Date> lastModificationDates;
-    private final Map<String,OclParser> parsers;
     private final String CALLER = "caller";
     private final String SELF = "self";
     private final String VALUE = "value";
     private final String TARGET = "target";
     
     private OCLParserProvider(){
-        this.lastModificationDates = new HashMap<>();
-        this.parsers = new HashMap<>();
     }
     
     public static OCLParserProvider getInstance() {
@@ -105,67 +101,28 @@ public class OCLParserProvider {
       return instance;
     }
 
-    public OclParser getParser(Document document, int caretOffset) throws STMAutocompletionException {
-        OclParser oclParser;
+    public OclParser getParser(URI dataModelURI, URI securityModelURI, Document securityModelDocument, int caretOffset) throws STMAutocompletionException {        
+        // 1) Parse the document to get a stm (secure text model)
+        Stm stm = parseSecurityModel(securityModelURI, securityModelDocument);
         
-        // 1) Get current AG application name and data-model file
-        Project p = TopComponent.getRegistry().getActivated().getLookup().lookup(Project.class);
-        if (p == null) {
-            DataObject dob = TopComponent.getRegistry().getActivated().getLookup().lookup(DataObject.class);
-            if (dob != null) {
-                FileObject fo = dob.getPrimaryFile();
-                p = FileOwnerQuery.getOwner(fo);
-            }
-        }
-        FileObject projectDirectory = p.getProjectDirectory();
-        if(projectDirectory == null){
-            throw new STMAutocompletionException("Error getting the project of the file.");
-        }
-        FileObject parent = projectDirectory.getParent();
-        if(parent == null) {
-            throw new STMAutocompletionException("Error getting the parent project of the file.");
-        }
-        String nameApp = parent.getName();
-        FileObject datamodelFO = parent.getFileObject("dtm/target/classes/umlclasses.xml");
-        if(datamodelFO == null) {
-            
-        }
+        // 2) Build the ocl parser
+        OclParser oclparser = createParser(dataModelURI, stm, caretOffset, securityModelDocument);
+        updateParser(oclparser, stm, caretOffset, securityModelDocument);
         
-        // 2) Parse the document to get a stm (secure text model)
-        Stm stm = parseDocument(document);
-        
-        // 3) Get the ocl parser
-        Date newModified = datamodelFO.lastModified();
-        if(lastModificationDates.containsKey(nameApp)) {
-            Date lastModified = lastModificationDates.get(nameApp);
-            if(lastModified.before(newModified)) {
-                lastModificationDates.put(nameApp, newModified);
-                oclParser = createParser(datamodelFO, stm, caretOffset, document);
-                parsers.put(nameApp, oclParser);
-            }
-            else {
-                oclParser = parsers.get(nameApp);
-                updateParser(oclParser, stm, caretOffset, document);
-            }
-        }
-        else {
-            oclParser = createParser(datamodelFO, stm, caretOffset, document);
-            lastModificationDates.put(nameApp, newModified);            
-            parsers.put(nameApp, oclParser);
-        }
-        return oclParser;
+        return oclparser;
     }
 
-    private OclParser createParser(FileObject datamodelFO, Stm stm, int caretOffset, Document document) throws STMAutocompletionException {
+    private OclParser createParser(URI dataModelURI, Stm stm, int caretOffset, Document document) throws STMAutocompletionException {
         OclParser oclParser = new OclParser();
         
         // 1) Load namespace
         AGMavenInterface agmi = AGMavenInterfaceFactory.getDefaultInterface();
+        
         Namespace namespace;
         try {
-            namespace = agmi.unserializeNamespace(datamodelFO.getInputStream());
+            namespace = agmi.unserializeNamespace(Utilities.toFile(dataModelURI));
         } 
-        catch (FileNotFoundException | AGMavenInterface.AGMavenInterfaceException ex) {
+        catch (AGMavenInterface.AGMavenInterfaceException ex) {
             throw new STMAutocompletionException(ex.getMessage());
         }
         
@@ -547,24 +504,19 @@ public class OCLParserProvider {
     }
     */
     
-    private Stm parseDocument(Document document) throws STMAutocompletionException {
-        // get URI from activated stm document
-        DataObject dob = TopComponent.getRegistry().getActivated().getLookup().lookup(DataObject.class);
-        FileObject fob = dob.getPrimaryFile();
-        URI uri = fob.toURI();
-        
+    private Stm parseSecurityModel(URI securityModelURI, Document securityModelDocument) throws STMAutocompletionException {        
         // get the text
         String text;
         try {
             // get the input stream
-            text = document.getText(0, document.getLength());
+            text = securityModelDocument.getText(0, securityModelDocument.getLength());
         } 
         catch (BadLocationException ex) {
             throw new STMAutocompletionException(ex.getMessage());
         }
         
         // parse the document
-        StmParserRequest stmParserRequest = new StmParserRequest(uri,text);
+        StmParserRequest stmParserRequest = new StmParserRequest(securityModelURI,text);
         StmParser stmParser = new StmParser(stmParserRequest);
         SourceTaskResult<Stm, Stm> stmParserResult;
         try {
