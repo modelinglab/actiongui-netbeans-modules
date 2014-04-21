@@ -666,6 +666,12 @@ public class OCLParserProvider {
             catch(Exception ex) {
                 continue;
             }
+            // if the element has parent --> the iterator has been parsed but not reduced --> those variables
+            // are not visible (there are certain cases in which the iterator has not completely been reduced but its
+            // cariables are not vivibles) --> skip
+            if(pArgOrItVar.parent() != null) {
+                continue;
+            }
             if(pArgOrItVar instanceof AItsArgOrItVar) {
                 AItsArgOrItVar aItsArgOrItVar = (AItsArgOrItVar)element;
                 LinkedList<PVariableDeclarationCS> vars = aItsArgOrItVar.getVars();
