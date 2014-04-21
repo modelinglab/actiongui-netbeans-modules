@@ -7,15 +7,12 @@
 package org.modelinglab.actiongui.netbeans.stm.oclautocompletion;
 
 import com.meaningfulmodels.actiongui.vm.core.IsUserAnnotation;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PushbackReader;
 import java.io.StringReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -73,12 +70,7 @@ import org.modelinglab.ocl.parser.sablecc.parser.ParserException;
 import org.modelinglab.ocl.parser.sablecc.parser.State;
 import org.modelinglab.ocl.parser.walker.ConcreteToAbstractMap;
 import org.modelinglab.ocl.parser.walker.OclWalker;
-import org.netbeans.api.project.FileOwnerQuery;
-import org.netbeans.api.project.Project;
-import org.openide.filesystems.FileObject;
-import org.openide.loaders.DataObject;
 import org.openide.util.Utilities;
-import org.openide.windows.TopComponent;
 
 /**
  * This class obtains an OCL parser each time the auto-completion is activated.
@@ -106,16 +98,9 @@ public class OCLParserProvider {
         Stm stm = parseSecurityModel(securityModelURI, securityModelDocument);
         
         // 2) Build the ocl parser
-        OclParser oclparser = createParser(dataModelURI, stm, caretOffset, securityModelDocument);
-        updateParser(oclparser, stm, caretOffset, securityModelDocument);
-        
-        return oclparser;
-    }
-
-    private OclParser createParser(URI dataModelURI, Stm stm, int caretOffset, Document document) throws STMAutocompletionException {
         OclParser oclParser = new OclParser();
         
-        // 1) Load namespace
+        // 3) Load namespace
         AGMavenInterface agmi = AGMavenInterfaceFactory.getDefaultInterface();
         
         Namespace namespace;
@@ -126,11 +111,11 @@ public class OCLParserProvider {
             throw new STMAutocompletionException(ex.getMessage());
         }
         
-        // 2) Build environment with datamodel and stm model information        
+        // 4) Build environment with datamodel and stm model information        
         OperationsStore os = new DefaultImplicitTypesProvider().createStore();
-        StaticEnvironment env = new StaticEnvironment(os);
-        
-        // 2.1) Add all entities, enumerations, and user entity, in a first scope
+        StaticEnvironment env = new StaticEnvironment(os);    
+        oclParser.setEnv(env);
+        // 4.1) Add all entities and enumerations in a first scope
         UmlClass callerEntity = null;
         Set<Element> entities = namespace.getOwnedMembers();
         for (Element element : entities) {
@@ -147,42 +132,13 @@ public class OCLParserProvider {
         }
         Variable callerVariable = new Variable(CALLER);
         callerVariable.setType(callerEntity);
-        env.addElement(callerVariable, false);
-        
-        // 2.2) Add a new scope for the rest of possible variables ('self', 'value', and 'target')
-        //      and possibly visble iterator and let variables
+        // 4.2) Add the possible variables ('self', 'value', and 'target') ,and possible visble iterator
+        // and let variables, in a second scope
         env.addScope();
-        
-        // 3) Set the built environment to the parser
-        oclParser.setEnv(env);
-        
-        // 4) Call update parser to update the rest of possible variables ('self', 'value', and 'target')
-        //      and possibly visible iterator and let variables
-        updateParser(oclParser, stm, caretOffset, document);
-        
-        // 5) Return the parser
-        return oclParser;
-    }
+        env.addElement(callerVariable, false);   
 
-    /**
-     * This method loads in the ocl parser environment, the possible variables that can be used in the ocl expression,
-     * depending on the permission and actions associated to the ocl expression, and the iterator and let visible variables
-     * @param oclParser
-     * @param stm
-     * @param caretOffset 
-     */
-    private void updateParser(OclParser oclParser, Stm stm, int caretOffset, Document document) throws STMAutocompletionException {
-        // 1) Remove the last scope of the environment, since it is dedicated for old variables 'self', 'value', and 'target'
-        StaticEnvironment env = oclParser.getEnv();
-        env.removeScope();
-        
-        // 2) Add a new scope for new variables 'self', 'value', and 'target'
-        //      and possibly visible iterator and let variables
-        env.addScope();
-        
-        // 3) Create 'self', 'value', and 'target' variables
+        // 5) Create 'self', 'value', and 'target' variables
         StmPermission permission = null;
-        
         for (StmRole stmRole : stm.getRoles().values()) {
             for (StmPermission stmPermission : stmRole.getPermissions().values()) {
                 int start = stmPermission.getStartPosition().getOffset();
@@ -200,8 +156,11 @@ public class OCLParserProvider {
         addValueVariable(permission, selfType, oclParser, caretOffset);
         addTargetVariable(permission, selfType, oclParser, caretOffset);           
         
-        // 4) Create iterator and let visible variables
-        addVisibleExpVariables(document, caretOffset, oclParser);
+        // 6) Create iterator and let visible variables
+        addVisibleExpVariables(securityModelDocument, caretOffset, oclParser);
+        
+        // 7) Return the parser
+        return oclParser;
     }
 
     private UmlClass addSelfVariable(StmPermission permission, OclParser oclParser, int caretOffset) throws STMAutocompletionException {
@@ -353,7 +312,7 @@ public class OCLParserProvider {
         Set<StmAction> constrainedActions = authorizationConstraint.getConstrainedActions();
         for (StmAction stmAction : constrainedActions) {
             KindOfAction kindOfAction = stmAction.getKindOfAction();
-            if(kindOfAction != KindOfAction.ADD || kindOfAction != KindOfAction.REMOVE) {
+            if(kindOfAction != KindOfAction.ADD && kindOfAction != KindOfAction.REMOVE) {
                 continue;
             }
             
@@ -565,6 +524,9 @@ public class OCLParserProvider {
             expr = STMOCLCompletionUtils.getTextFromCaretToStartSymbol(document, caretOffset).toString();
         }
         catch (BadLocationException ex) {
+            return;
+        }
+        if(expr.isEmpty()) {
             return;
         }
         
