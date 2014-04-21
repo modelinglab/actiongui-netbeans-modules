@@ -51,7 +51,7 @@ public class STMOCLCompletionProvider implements CompletionProvider{
             protected void query(CompletionResultSet completionResultSet, Document document, int caretOffset) {                 
                 
                 // 1) Check the cursor position is within an authorization constraint declaration (i.e. between '[' and ']')
-                boolean validPosition = false;
+                boolean validPosition;
                 try {
                     validPosition = STMOCLCompletionUtils.isValidPosition(document, caretOffset);
                 } 
@@ -80,6 +80,9 @@ public class STMOCLCompletionProvider implements CompletionProvider{
                         FileObject fo = dob.getPrimaryFile();
                         p = FileOwnerQuery.getOwner(fo);
                     }
+                }
+                if(p == null) {
+                    return;
                 }
                 FileObject projectDirectory = p.getProjectDirectory();
                 if(projectDirectory == null){

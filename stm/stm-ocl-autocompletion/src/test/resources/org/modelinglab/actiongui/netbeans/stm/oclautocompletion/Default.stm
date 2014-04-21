@@ -1,0 +1,31 @@
+// NOTE: DO NOT MODIFY THIS FILE, IT IS NECESSARY FOR TESTS
+
+role DEFAULT {
+    Department{
+        read constrainedBy [caller.worksIn->includes(self.belongsTo)]
+    }
+    MedicalCenter{
+        read constrainedBy [caller.worksIn->includes(self)]
+    }
+    // this permission is for testing the ocl auto-completion
+    Professional {
+        // composite actions for checking (caller, self, target and value) variables
+        create constrainedBy [] // caller, caller
+        read constrainedBy [] // caller, self
+        update constrainedBy [] // caller, self
+        delete constrainedBy [] // caller, self
+        // atomic actions for checking (caller, self, target and value) variables  
+        update(user), update(name) constrainedBy [] // attributes with the same type --> caller, self, value
+        update(user), update(role) constrainedBy [] // attributes with different type --> caller, self
+        add(worksIn) constrainedBy [] // caller, self, target
+        add(worksIn), remove(worksIn) constrainedBy [] // caller, self, target
+        add(worksIn), remove(createdEHRs) constrainedBy [] // caller, self
+        update(worksIn), add(worksIn) constrainedBy [] // caller, self, target, value
+        
+        // checking iterator visible variables
+        read constrainedBy [Professional.allInstances()->forAll(v1|v1.name = 'foo')->] // no visible variables
+        read constrainedBy [Professional.allInstances()->forAll(v1|v1.name = 'foo' and v1.worksIn->size() > v1.createdEHRs->select(v2|v2.date = null ] // v1, v2
+        read constrainedBy [Professional.allInstances()->forAll(v1|v1.name = 'foo' and v1.worksIn->size() > v1.createdEHRs->select(v2|v2.date = null).] // v1
+        read constrainedBy [Professional.allInstances()->forAll(v1|v1.name = 'foo') and Professional.allInstances()->forAll(v1|v1.name = 'foo') or self.] // no visible variables
+    }   
+}
