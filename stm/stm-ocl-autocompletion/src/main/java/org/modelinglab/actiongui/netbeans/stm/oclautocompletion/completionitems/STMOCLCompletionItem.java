@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import javax.swing.ImageIcon;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.StyledDocument;
@@ -18,6 +19,7 @@ import org.netbeans.spi.editor.completion.CompletionItem;
 import org.netbeans.spi.editor.completion.CompletionTask;
 import org.netbeans.spi.editor.completion.support.CompletionUtilities;
 import org.openide.util.Exceptions;
+import org.openide.util.ImageUtilities;
 
 /**
  *
@@ -26,10 +28,12 @@ import org.openide.util.Exceptions;
 public abstract class STMOCLCompletionItem implements CompletionItem{
     protected final String prefix;
     protected final int caretOffset;
+    protected final ImageIcon fieldIcon;
     
     public STMOCLCompletionItem(String prefix, int caretOffset) {
         this.prefix = prefix;
         this.caretOffset = caretOffset;
+        this.fieldIcon = new ImageIcon(ImageUtilities.loadImage("org/modelinglab/actiongui/netbeans/stm/oclautocompletion/ocl.png"));
     }
     
     @Override
@@ -66,7 +70,7 @@ public abstract class STMOCLCompletionItem implements CompletionItem{
     public void render(Graphics g, Font defaultFont, Color defaultColor, Color backgroundColor, int width, int height, boolean selected) {
         String leftText = adaptTextToHtml(getLeftText());
         String rightText = adaptTextToHtml(getRightText());
-        CompletionUtilities.renderHtml(null, leftText, rightText, g, defaultFont, getColor(), width, height, selected);
+        CompletionUtilities.renderHtml(fieldIcon, leftText, rightText, g, defaultFont, getColor(), width, height, selected);
     }
 
     @Override

@@ -8,64 +8,61 @@ package org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems
 
 import java.awt.Color;
 import javax.swing.text.JTextComponent;
-import org.netbeans.api.editor.completion.Completion;
+import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.STMOCLCompletionUtils;
+import org.modelinglab.ocl.core.ast.UmlClass;
 
 /**
  *
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-public class STMOCLErrorCompletionItem extends STMOCLCompletionItem{
+public class STMOCLEntityCompletionItem extends STMOCLCompletionItem{
 
-    private final String errorMessage;
-    
-    public STMOCLErrorCompletionItem(String prefix, int caretOffset, String errorMessage) {
+    private final UmlClass entity;
+
+    public STMOCLEntityCompletionItem(UmlClass entity, String prefix, int caretOffset) {
         super(prefix, caretOffset);
-        this.errorMessage = errorMessage;
-    }
+        assert STMOCLCompletionUtils.isEntity(entity);
+        assert entity.getName().startsWith(prefix);
+        this.entity = entity;
+    }        
 
-    @Override
-    public void defaultAction(JTextComponent component) {
-        Completion.get().hideAll();
-    }
-
-    
-    
     @Override
     public int getSortPriority() {
-        return 0;
+        return 2;
     }
 
     @Override
     public CharSequence getSortText() {
-        return errorMessage;
+        return entity.getName();
     }
 
     @Override
     public CharSequence getInsertPrefix() {
-        return errorMessage;
+        return entity.getName();
     }
-
+    
     @Override
     protected String getTextToInsert() {
-        return "";
+        return entity.getName();
     }
-
+    
     @Override
     protected String getLeftText() {
-        return errorMessage;
+        return entity.getName();
     }
-
+    
     @Override
     protected String getRightText() {
-        return "";
+        return entity.getClassifierType().toString();
     }
 
     @Override
     protected void setCaretOffset(JTextComponent component) {
+
     }
 
     @Override
     protected Color getColor() {
-        return Color.WHITE;
+        return Color.RED;
     }
 }

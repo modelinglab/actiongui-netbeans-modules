@@ -55,7 +55,7 @@ public class STMOCLPropertyCompletionItem extends STMOCLCompletionItem{
     
     @Override
     protected String getRightText() {
-        Classifier type = null;
+        Classifier type;
         if(fromImplicitCollect) {
             Classifier referredType = property.getReferredType();
             BagType bagType = new BagType(referredType);

@@ -25,12 +25,9 @@ public class STMOCLDotOrArrowOperationCompletionItem extends STMOCLOperationComp
     protected String getTextToInsert() {
         StringBuilder textToInsert = new StringBuilder(op.getName() + "(");
         List<Parameter> ownedParameters = op.getOwnedParameters();
-        for (Parameter parameter : ownedParameters) {
-            String name = parameter.getName();
-            textToInsert.append(name).append(",");
-        }
-        if(!ownedParameters.isEmpty()) {
-            textToInsert.deleteCharAt(textToInsert.length()-1);
+        // insert n-1 commas, where n = number of parameters
+        for (int i = 1; i < ownedParameters.size(); i++) {
+            textToInsert.append(",");
         }
         textToInsert.append(')');
         return textToInsert.toString();

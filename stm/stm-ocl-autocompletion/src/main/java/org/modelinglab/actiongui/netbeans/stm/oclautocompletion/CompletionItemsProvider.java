@@ -11,38 +11,30 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems.STMOCLIteratorCompletionItem;
 import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems.STMOCLDotOrArrowOperationCompletionItem;
+import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems.STMOCLEntityCompletionItem;
+import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems.STMOCLEnumLiteralCompletionItem;
+import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems.STMOCLIteratorCompletionItem;
 import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems.STMOCLOtherOperationCompletionItem;
+import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems.STMOCLPrefixOperationCompletionItem;
 import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems.STMOCLPropertyCompletionItem;
+import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems.STMOCLVariableCompletionItem;
 import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.exceptions.STMAutocompletionException;
 import org.modelinglab.ocl.core.ast.AssociationEnd;
 import org.modelinglab.ocl.core.ast.Attribute;
+import org.modelinglab.ocl.core.ast.Element;
 import org.modelinglab.ocl.core.ast.Operation;
 import org.modelinglab.ocl.core.ast.OperationsStore;
 import org.modelinglab.ocl.core.ast.StaticEnvironment;
 import org.modelinglab.ocl.core.ast.UmlClass;
+import org.modelinglab.ocl.core.ast.UmlEnum;
+import org.modelinglab.ocl.core.ast.UmlEnumLiteral;
 import org.modelinglab.ocl.core.ast.expressions.OclExpression;
+import org.modelinglab.ocl.core.ast.expressions.Variable;
 import org.modelinglab.ocl.core.ast.types.Classifier;
 import org.modelinglab.ocl.core.ast.types.CollectionType;
 import org.modelinglab.ocl.core.ast.types.PrimitiveType;
 import org.modelinglab.ocl.core.standard.OclStandardIterators;
-import org.modelinglab.ocl.core.standard.operations.bag.IsEqual;
-import org.modelinglab.ocl.core.standard.operations.bool.And;
-import org.modelinglab.ocl.core.standard.operations.bool.Implies;
-import org.modelinglab.ocl.core.standard.operations.bool.Not;
-import org.modelinglab.ocl.core.standard.operations.bool.Or;
-import org.modelinglab.ocl.core.standard.operations.bool.Xor;
-import org.modelinglab.ocl.core.standard.operations.collection.IsDifferent;
-import org.modelinglab.ocl.core.standard.operations.integer.Addition;
-import org.modelinglab.ocl.core.standard.operations.integer.Division;
-import org.modelinglab.ocl.core.standard.operations.integer.Multiplication;
-import org.modelinglab.ocl.core.standard.operations.integer.Negative;
-import org.modelinglab.ocl.core.standard.operations.integer.Substraction;
-import org.modelinglab.ocl.core.standard.operations.real.Greater;
-import org.modelinglab.ocl.core.standard.operations.real.GreaterOrEqual;
-import org.modelinglab.ocl.core.standard.operations.real.Less;
-import org.modelinglab.ocl.core.standard.operations.real.LessOrEqual;
 import org.modelinglab.ocl.parser.OclParser;
 import org.netbeans.spi.editor.completion.CompletionItem;
 
@@ -76,87 +68,6 @@ public class CompletionItemsProvider {
         assert completionItems != null;
         
         return completionItems;
-    }
-    
-    private static boolean isDotOrArrowOperation(Operation op) {
-        
-        // bag operations
-        if(op instanceof IsEqual) {
-            return false;
-        }
-        
-        // boolean operations
-        if(op instanceof And || op instanceof Implies || op instanceof Not || op instanceof Or || op instanceof Xor){
-            return false;
-        }
-        
-        // collection operations
-        if(op instanceof IsDifferent || 
-                op instanceof org.modelinglab.ocl.core.standard.operations.collection.IsEqual){
-            return false;
-        }
-        
-        // integer operations
-        if(op instanceof Addition || op instanceof Division || op instanceof Multiplication
-                || op instanceof Negative || op instanceof Substraction){
-            return false;
-        }
-        
-        // oclany operations
-        if(op instanceof org.modelinglab.ocl.core.standard.operations.oclAny.IsEqual ||
-                op instanceof org.modelinglab.ocl.core.standard.operations.oclAny.IsDifferent) {
-            return false;
-        }
-        
-        //oclvoid operations
-        if(op instanceof org.modelinglab.ocl.core.standard.operations.oclVoid.IsEqual) {
-            return false;
-        }
-        
-        // real operations
-        if(op instanceof org.modelinglab.ocl.core.standard.operations.real.Addition ||
-                op instanceof org.modelinglab.ocl.core.standard.operations.real.Division ||
-                op instanceof Greater || op instanceof GreaterOrEqual || op instanceof Less ||
-                op instanceof LessOrEqual ||
-                op instanceof org.modelinglab.ocl.core.standard.operations.real.Multiplication ||
-                op instanceof org.modelinglab.ocl.core.standard.operations.real.Negative ||
-                op instanceof org.modelinglab.ocl.core.standard.operations.real.Substraction) {
-            return false;
-        }
-        
-        // sequence operations
-        if(op instanceof org.modelinglab.ocl.core.standard.operations.sequence.IsEqual) {
-            return false;
-        }
-        
-        // set operations
-        if(op instanceof org.modelinglab.ocl.core.standard.operations.set.IsEqual ||
-                op instanceof org.modelinglab.ocl.core.standard.operations.set.Substraction){
-            return false;
-        }
-        
-        // string operations
-        if(op instanceof org.modelinglab.ocl.core.standard.operations.string.Addition ||
-                op instanceof org.modelinglab.ocl.core.standard.operations.string.Greater ||
-                op instanceof org.modelinglab.ocl.core.standard.operations.string.GreaterOrEqual ||
-                op instanceof org.modelinglab.ocl.core.standard.operations.string.Less ||
-                op instanceof org.modelinglab.ocl.core.standard.operations.string.LessOrEqual) {
-            return false;
-        }
-        
-        return true;                
-    }
-
-    private static boolean isOtherOperation(Operation op) {
-        if (isDotOrArrowOperation(op)) {
-            return false;
-        }
-        if(op instanceof Not || op instanceof Negative ||
-                op instanceof org.modelinglab.ocl.core.standard.operations.real.Negative){
-            return false;
-        }
-        
-        return true;
     }
     
     private static STMOCLIteratorCompletionItem buildOCLIteratorCompletionItem(String nameIterator, CollectionType sourceType, String prefix, int caretOffset, OclParser parser) throws STMAutocompletionException {
@@ -236,26 +147,20 @@ public class CompletionItemsProvider {
 
 
         // 3) Get all operations that match with the type of the parsed expression, as source of the operation,
-        //      except the operations "not" and "-" (negative), beacuase they start with the name of the operation.
-        //      Polimorfic operations must be rejected: only one operation for each kind of operation.
+        //      except the operations "not" and "-" (negative), because they start with the name of the operation.
         //      Also, a filter with the given accumulator must be applied.
         StaticEnvironment env = parser.getEnv();
         OperationsStore opStore = env.getOpStore();
-        List<String> insertedNames = new ArrayList<>();
         Iterator<Operation> operations = opStore.getOperations(typeSourceExpr, null);
         while(operations.hasNext()) {
             Operation op = operations.next();
-            if(!isDotOrArrowOperation(op)) {
+            if(!STMOCLCompletionUtils.isDotOrArrowOperation(op)) {
                 continue;
             }
             String name = op.getName();
             if(!name.startsWith(accumulator)) {
                 continue;
             }
-            if(insertedNames.contains(name)){
-                continue;
-            }
-            insertedNames.add(name);
             STMOCLDotOrArrowOperationCompletionItem item = new STMOCLDotOrArrowOperationCompletionItem(op, accumulator, caretOffset);
             completionItems.add(item);
         }
@@ -319,25 +224,19 @@ public class CompletionItemsProvider {
         
         // 2) Get all operations that match with the type of the parsed expression, as source of the operation,
         //      excluding the operations of dot and arrow operators.
-        //      Polimorfic operations must be rejected: only one operation for each kind of operation.
         //      Also, a filter with the given accumulator must be applied.
         StaticEnvironment env = parser.getEnv();
         OperationsStore opStore = env.getOpStore();
-        List<String> insertedNames = new ArrayList<>();
         Iterator<Operation> operations = opStore.getOperations(typeSourceExpr, null);
         while(operations.hasNext()) {
             Operation op = operations.next();
-            if(!isOtherOperation(op)) {
+            if(!STMOCLCompletionUtils.isOtherOperation(op)) {
                 continue;
             }
             String name = op.getName();
             if(!name.startsWith(accumulator)) {
                 continue;
             }
-            if(insertedNames.contains(name)){
-                continue;
-            }
-            insertedNames.add(name);
             STMOCLOtherOperationCompletionItem item = new STMOCLOtherOperationCompletionItem(op, accumulator, caretOffset);
             completionItems.add(item);
         }
@@ -348,6 +247,56 @@ public class CompletionItemsProvider {
     private static Collection<CompletionItem> buildInitExprCompletionItems(String accumulator, OclParser parser, int caretOffset, STMOCLCompletionState state) {
         Collection<CompletionItem> completionItems = new ArrayList<>();
         
+        // 1) Add all variables
+        StaticEnvironment env = parser.getEnv();
+        Set<Element> ownedMembers = env.getOwnedMembers();
+        for (Element element : ownedMembers) {
+            if(element instanceof Variable) {
+                Variable variable = (Variable) element;
+                String name = variable.getName();
+                if(!name.startsWith(accumulator)) {
+                    continue;
+                }
+                STMOCLVariableCompletionItem item = new STMOCLVariableCompletionItem(variable, accumulator, caretOffset);
+                completionItems.add(item);
+            }
+        }
+        
+        // 2) Add all operations with prefix operators. Currently they are: negation "not" and negative "-"
+        Set<Operation> prefixOperations = STMOCLCompletionUtils.getPrefixOperations(env);
+        for (Operation op : prefixOperations) {
+            String name = op.getName();
+            if(!name.startsWith(accumulator)) {
+                continue;
+            }
+            STMOCLPrefixOperationCompletionItem item = new STMOCLPrefixOperationCompletionItem(op, accumulator, caretOffset);
+            completionItems.add(item);
+        }
+        
+        // 3) Add all entities
+        Set<UmlClass> entities = STMOCLCompletionUtils.getEntities(env);
+        for (UmlClass entity : entities) {
+            String name = entity.getName();
+            if(!name.startsWith(accumulator)) {
+                continue;
+            }
+            STMOCLEntityCompletionItem item = new STMOCLEntityCompletionItem(entity, accumulator, caretOffset);
+            completionItems.add(item);
+        }
+        
+        // 4) Add all enumerations
+        Set<UmlEnum> enumerations = STMOCLCompletionUtils.getEnumerations(env);
+        for (UmlEnum umlEnum : enumerations) {
+            List<UmlEnumLiteral> literals = umlEnum.getLiterals();
+            for (UmlEnumLiteral umlEnumLiteral : literals) {
+                String name = umlEnumLiteral.toString();
+                if(!name.startsWith(accumulator)) {
+                    continue;
+                }
+                STMOCLEnumLiteralCompletionItem item = new STMOCLEnumLiteralCompletionItem(umlEnumLiteral, accumulator, caretOffset);
+                completionItems.add(item);
+            }
+        }
         return completionItems;
     }
 }

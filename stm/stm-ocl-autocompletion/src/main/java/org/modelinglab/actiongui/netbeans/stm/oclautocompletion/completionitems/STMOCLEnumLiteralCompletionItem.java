@@ -8,64 +8,60 @@ package org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems
 
 import java.awt.Color;
 import javax.swing.text.JTextComponent;
-import org.netbeans.api.editor.completion.Completion;
+import org.modelinglab.ocl.core.ast.UmlEnumLiteral;
 
 /**
  *
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-public class STMOCLErrorCompletionItem extends STMOCLCompletionItem{
+public class STMOCLEnumLiteralCompletionItem extends STMOCLCompletionItem{
 
-    private final String errorMessage;
-    
-    public STMOCLErrorCompletionItem(String prefix, int caretOffset, String errorMessage) {
+    private final UmlEnumLiteral literal;
+
+    public STMOCLEnumLiteralCompletionItem(UmlEnumLiteral literal, String prefix, int caretOffset) {
         super(prefix, caretOffset);
-        this.errorMessage = errorMessage;
-    }
+        assert literal.toString().startsWith(prefix);
+        this.literal = literal;
+    }        
 
-    @Override
-    public void defaultAction(JTextComponent component) {
-        Completion.get().hideAll();
-    }
-
-    
-    
     @Override
     public int getSortPriority() {
-        return 0;
+        return 3;
     }
 
     @Override
     public CharSequence getSortText() {
-        return errorMessage;
+        return literal.toString();
     }
 
     @Override
     public CharSequence getInsertPrefix() {
-        return errorMessage;
+        return literal.toString();
     }
-
+    
     @Override
     protected String getTextToInsert() {
-        return "";
+        return literal.toString();
     }
-
+    
     @Override
     protected String getLeftText() {
-        return errorMessage;
+        return literal.toString();
     }
-
+    
     @Override
     protected String getRightText() {
-        return "";
+        return literal.getType().toString();
     }
 
     @Override
     protected void setCaretOffset(JTextComponent component) {
+
     }
 
     @Override
     protected Color getColor() {
-        return Color.WHITE;
+        Color c = new Color(222, 184, 135);
+        return c;
     }
 }

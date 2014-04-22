@@ -8,28 +8,22 @@ package org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems
 
 import java.awt.Color;
 import javax.swing.text.JTextComponent;
-import org.netbeans.api.editor.completion.Completion;
+import org.modelinglab.ocl.core.ast.expressions.Variable;
 
 /**
  *
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-public class STMOCLErrorCompletionItem extends STMOCLCompletionItem{
+public class STMOCLVariableCompletionItem extends STMOCLCompletionItem{
 
-    private final String errorMessage;
-    
-    public STMOCLErrorCompletionItem(String prefix, int caretOffset, String errorMessage) {
+    private final Variable variable;
+
+    public STMOCLVariableCompletionItem(Variable variable, String prefix, int caretOffset) {
         super(prefix, caretOffset);
-        this.errorMessage = errorMessage;
-    }
+        assert variable.getName().startsWith(prefix);
+        this.variable = variable;
+    }            
 
-    @Override
-    public void defaultAction(JTextComponent component) {
-        Completion.get().hideAll();
-    }
-
-    
-    
     @Override
     public int getSortPriority() {
         return 0;
@@ -37,35 +31,37 @@ public class STMOCLErrorCompletionItem extends STMOCLCompletionItem{
 
     @Override
     public CharSequence getSortText() {
-        return errorMessage;
+        return variable.getName();
     }
 
     @Override
     public CharSequence getInsertPrefix() {
-        return errorMessage;
+        return variable.getName();
     }
-
+    
     @Override
     protected String getTextToInsert() {
-        return "";
+        return variable.getName();
     }
-
+    
     @Override
     protected String getLeftText() {
-        return errorMessage;
+        return variable.getName();
     }
-
+    
     @Override
     protected String getRightText() {
-        return "";
+        return variable.getType().toString();
     }
 
     @Override
     protected void setCaretOffset(JTextComponent component) {
+
     }
 
     @Override
     protected Color getColor() {
-        return Color.WHITE;
+        Color c = new Color(0, 204, 0);
+        return c;
     }
 }

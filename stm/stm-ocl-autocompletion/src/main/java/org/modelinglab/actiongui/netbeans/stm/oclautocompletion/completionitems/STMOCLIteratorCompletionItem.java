@@ -46,7 +46,7 @@ public class STMOCLIteratorCompletionItem extends STMOCLCompletionItem{
     
     @Override
     protected String getTextToInsert() {
-        String textToInsert = nameIterator + "(" + nameItVar + "|body)";
+        String textToInsert = nameIterator + "(" + nameItVar + "|)";
         return textToInsert;
     }
     
