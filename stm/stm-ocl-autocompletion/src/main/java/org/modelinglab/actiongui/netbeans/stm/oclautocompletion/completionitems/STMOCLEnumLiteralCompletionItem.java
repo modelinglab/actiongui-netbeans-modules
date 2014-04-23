@@ -26,7 +26,7 @@ public class STMOCLEnumLiteralCompletionItem extends STMOCLCompletionItem{
 
     @Override
     public int getSortPriority() {
-        return 3;
+        return 4;
     }
 
     @Override

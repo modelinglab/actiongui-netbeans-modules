@@ -197,12 +197,19 @@ public class STMOCLCompletionUtils {
     }
 
     public static boolean isDotOperatorSymbol(StringBuilder sb) {
-        assert sb.length() > 0;
-        
+        if(sb == null) {
+            return false;
+        }
+        if(sb.length() == 0) {
+            return false;
+        }
         return sb.charAt(sb.length()-1) == '.';
     }
 
     public static boolean isArrowOperatorSymbol(StringBuilder sb) {
+        if(sb == null) {
+            return false;
+        }
         if(sb.length() < 2) {
             return false;
         }
@@ -354,5 +361,18 @@ public class STMOCLCompletionUtils {
     
     public static boolean isEntity(UmlClass entity) {
         return entity.getAnnotation(EntityAnnotation.class) != null;
+    }
+    
+    public static void removeTailWhiteSpaces(StringBuilder sb) {
+        if(sb == null) {
+            return;
+        }
+        while(sb.length() > 0) {
+            char charAt = sb.charAt(sb.length()-1);
+            if(!Character.isWhitespace(charAt)) {
+                break;
+            }
+            sb.deleteCharAt(sb.length()-1);
+        }
     }
 }

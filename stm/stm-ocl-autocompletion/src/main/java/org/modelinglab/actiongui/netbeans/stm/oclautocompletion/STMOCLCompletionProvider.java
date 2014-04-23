@@ -7,8 +7,13 @@
 package org.modelinglab.actiongui.netbeans.stm.oclautocompletion;
 
 import java.io.IOException;
+import java.io.PushbackReader;
+import java.io.StringReader;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.ListIterator;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
@@ -20,6 +25,11 @@ import org.modelinglab.ocl.core.exceptions.OclException;
 import org.modelinglab.ocl.parser.OclLexerException;
 import org.modelinglab.ocl.parser.OclParser;
 import org.modelinglab.ocl.parser.OclParserException;
+import org.modelinglab.ocl.parser.sablecc.lexer.Lexer;
+import org.modelinglab.ocl.parser.sablecc.lexer.LexerException;
+import org.modelinglab.ocl.parser.sablecc.node.Start;
+import org.modelinglab.ocl.parser.sablecc.parser.Parser;
+import org.modelinglab.ocl.parser.sablecc.parser.ParserException;
 import org.netbeans.api.editor.mimelookup.MimeRegistration;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
@@ -31,6 +41,7 @@ import org.netbeans.spi.editor.completion.support.AsyncCompletionQuery;
 import org.netbeans.spi.editor.completion.support.AsyncCompletionTask;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataObject;
+import org.openide.util.Exceptions;
 import org.openide.windows.TopComponent;
 
 /**
@@ -197,19 +208,8 @@ public class STMOCLCompletionProvider implements CompletionProvider{
         StringBuilder accumulator = new StringBuilder("");
         StringBuilder sb = STMOCLCompletionUtils.getTextFromCaretToStartSymbol(document, caretOffset);
         
-        // 1) find the dot or arrow operator and build the accumulator
+        // 1) Build the (possibly) accumulator
         while (sb.length() > 0) {
-            if(STMOCLCompletionUtils.isDotOperatorSymbol(sb)) {
-                state = STMOCLCompletionState.DOT_OPERATOR;
-                sb.deleteCharAt(sb.length()-1);
-                break;
-            }
-            if(STMOCLCompletionUtils.isArrowOperatorSymbol(sb)) {
-                state = STMOCLCompletionState.ARROW_OPERATOR;
-                sb.deleteCharAt(sb.length()-1);
-                sb.deleteCharAt(sb.length()-1);
-                break;
-            }
             if(!STMOCLCompletionUtils.isIdentifierSymbol(sb)) {
                 break;
             }
@@ -217,11 +217,27 @@ public class STMOCLCompletionProvider implements CompletionProvider{
             sb.deleteCharAt(sb.length()-1); 
         }
         accumulator = accumulator.reverse();
+        
+        // 2) Remove the (possibly) whitespaces
+        STMOCLCompletionUtils.removeTailWhiteSpaces(sb);
+        
+        // 3) Find the dot or arrow operator
+        if(STMOCLCompletionUtils.isDotOperatorSymbol(sb)) {
+            state = STMOCLCompletionState.DOT_OPERATOR;
+            sb.deleteCharAt(sb.length()-1);
+        }
+        if(STMOCLCompletionUtils.isArrowOperatorSymbol(sb)) {
+            state = STMOCLCompletionState.ARROW_OPERATOR;
+            sb.deleteCharAt(sb.length()-1);
+            sb.deleteCharAt(sb.length()-1);
+        }
+        
+        // 4) If operator was not found --> finish
         if(state == null) {
             return null;
         }
         
-        // 2) find the source operator expression
+        // 5) Find the source operator expression
         int numOpenParenthesis = 0;
         int numOpenBrakets = 0;
         while(sb.length() > 0){
@@ -261,7 +277,7 @@ public class STMOCLCompletionProvider implements CompletionProvider{
             return null;
         }
         
-        // 3) Parse the source operator expression
+        // 6) Parse the source operator expression
         OclExpression expBO;
         try {
             expBO = parser.parse(expBeforeOperator.toString());
@@ -271,7 +287,7 @@ public class STMOCLCompletionProvider implements CompletionProvider{
             return null;
         }
         
-        
+        // 7) Build the completion items
         Collection<CompletionItem> completionItems = CompletionItemsProvider.buildCompletionItems(expBO, accumulator.toString(), parser, caretOffset, state);
         return completionItems;
     }
@@ -308,13 +324,7 @@ public class STMOCLCompletionProvider implements CompletionProvider{
         }
         
         // 2) Delete all initial whitespaces
-        while(sb.length() > 0) {
-            char charAt = sb.charAt(sb.length()-1);
-            if(!Character.isWhitespace(charAt)) {
-                break;
-            }
-            sb.deleteCharAt(sb.length()-1);
-        }
+        STMOCLCompletionUtils.removeTailWhiteSpaces(sb);
         // if there are no more text, we are in init_expr case
         if(sb.length() == 0) {
             state = STMOCLCompletionState.INIT_EXPR;

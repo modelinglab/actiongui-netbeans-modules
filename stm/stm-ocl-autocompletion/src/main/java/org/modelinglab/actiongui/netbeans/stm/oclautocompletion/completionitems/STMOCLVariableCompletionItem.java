@@ -26,7 +26,7 @@ public class STMOCLVariableCompletionItem extends STMOCLCompletionItem{
 
     @Override
     public int getSortPriority() {
-        return 0;
+        return 2;
     }
 
     @Override

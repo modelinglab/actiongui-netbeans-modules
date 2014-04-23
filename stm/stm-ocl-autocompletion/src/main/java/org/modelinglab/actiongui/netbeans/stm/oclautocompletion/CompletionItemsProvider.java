@@ -14,6 +14,7 @@ import java.util.Set;
 import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems.STMOCLDotOrArrowOperationCompletionItem;
 import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems.STMOCLEntityCompletionItem;
 import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems.STMOCLEnumLiteralCompletionItem;
+import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems.STMOCLIfThenElseCompletionItem;
 import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems.STMOCLIteratorCompletionItem;
 import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems.STMOCLOtherOperationCompletionItem;
 import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems.STMOCLPrefixOperationCompletionItem;
@@ -246,20 +247,12 @@ public class CompletionItemsProvider {
 
     private static Collection<CompletionItem> buildInitExprCompletionItems(String accumulator, OclParser parser, int caretOffset, STMOCLCompletionState state) {
         Collection<CompletionItem> completionItems = new ArrayList<>();
-        
-        // 1) Add all variables
         StaticEnvironment env = parser.getEnv();
-        Set<Element> ownedMembers = env.getOwnedMembers();
-        for (Element element : ownedMembers) {
-            if(element instanceof Variable) {
-                Variable variable = (Variable) element;
-                String name = variable.getName();
-                if(!name.startsWith(accumulator)) {
-                    continue;
-                }
-                STMOCLVariableCompletionItem item = new STMOCLVariableCompletionItem(variable, accumulator, caretOffset);
-                completionItems.add(item);
-            }
+        
+        // 1) Add if statement
+        if("if".startsWith(accumulator)) {
+            STMOCLIfThenElseCompletionItem item = new STMOCLIfThenElseCompletionItem(accumulator, caretOffset);
+            completionItems.add(item);
         }
         
         // 2) Add all operations with prefix operators. Currently they are: negation "not" and negative "-"
@@ -273,7 +266,21 @@ public class CompletionItemsProvider {
             completionItems.add(item);
         }
         
-        // 3) Add all entities
+        // 3) Add all variables
+        Set<Element> ownedMembers = env.getOwnedMembers();
+        for (Element element : ownedMembers) {
+            if(element instanceof Variable) {
+                Variable variable = (Variable) element;
+                String name = variable.getName();
+                if(!name.startsWith(accumulator)) {
+                    continue;
+                }
+                STMOCLVariableCompletionItem item = new STMOCLVariableCompletionItem(variable, accumulator, caretOffset);
+                completionItems.add(item);
+            }
+        }
+        
+        // 4) Add all entities
         Set<UmlClass> entities = STMOCLCompletionUtils.getEntities(env);
         for (UmlClass entity : entities) {
             String name = entity.getName();
@@ -284,7 +291,7 @@ public class CompletionItemsProvider {
             completionItems.add(item);
         }
         
-        // 4) Add all enumerations
+        // 5) Add all enumerations
         Set<UmlEnum> enumerations = STMOCLCompletionUtils.getEnumerations(env);
         for (UmlEnum umlEnum : enumerations) {
             List<UmlEnumLiteral> literals = umlEnum.getLiterals();

@@ -8,61 +8,63 @@ package org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems
 
 import java.awt.Color;
 import javax.swing.text.JTextComponent;
-import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.STMOCLCompletionUtils;
-import org.modelinglab.ocl.core.ast.UmlClass;
 
 /**
  *
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-public class STMOCLEntityCompletionItem extends STMOCLCompletionItem{
-
-    private final UmlClass entity;
-
-    public STMOCLEntityCompletionItem(UmlClass entity, String prefix, int caretOffset) {
+public class STMOCLIfThenElseCompletionItem extends STMOCLCompletionItem{
+    
+    private final String leftText;
+    private final String rightText;
+    private final String textToInsert;
+    
+    public STMOCLIfThenElseCompletionItem(String prefix, int caretOffset) {
         super(prefix, caretOffset);
-        assert STMOCLCompletionUtils.isEntity(entity);
-        assert entity.getName().startsWith(prefix);
-        this.entity = entity;
-    }        
+        assert "if".startsWith(prefix);
+        this.leftText = "if <condition_expr>:Boolean then <then_expr>:T else <else_expr>:T endif        ";
+        this.rightText = "T";
+        this.textToInsert = "if <condition_expr> then <then_expr> else <else_expr> endif";
+    }
 
     @Override
     public int getSortPriority() {
-        return 3;
+        return 0;
     }
 
     @Override
     public CharSequence getSortText() {
-        return entity.getName();
+        return leftText;
     }
 
     @Override
     public CharSequence getInsertPrefix() {
-        return entity.getName();
+        return textToInsert;
     }
-    
+
     @Override
     protected String getTextToInsert() {
-        return entity.getName();
+        return textToInsert;
     }
-    
+        
     @Override
     protected String getLeftText() {
-        return entity.getName();
+        return leftText;
     }
-    
+
     @Override
     protected String getRightText() {
-        return entity.getClassifierType().toString();
+        return rightText;
     }
 
     @Override
     protected void setCaretOffset(JTextComponent component) {
-
+        component.setCaretPosition(caretOffset - prefix.length() + 3);
     }
 
     @Override
     protected Color getColor() {
-        return Color.RED;
+        return Color.BLACK;
     }
+    
 }
