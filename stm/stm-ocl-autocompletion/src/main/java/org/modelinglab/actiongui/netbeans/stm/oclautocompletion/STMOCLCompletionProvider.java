@@ -7,13 +7,8 @@
 package org.modelinglab.actiongui.netbeans.stm.oclautocompletion;
 
 import java.io.IOException;
-import java.io.PushbackReader;
-import java.io.StringReader;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.ListIterator;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
@@ -25,11 +20,6 @@ import org.modelinglab.ocl.core.exceptions.OclException;
 import org.modelinglab.ocl.parser.OclLexerException;
 import org.modelinglab.ocl.parser.OclParser;
 import org.modelinglab.ocl.parser.OclParserException;
-import org.modelinglab.ocl.parser.sablecc.lexer.Lexer;
-import org.modelinglab.ocl.parser.sablecc.lexer.LexerException;
-import org.modelinglab.ocl.parser.sablecc.node.Start;
-import org.modelinglab.ocl.parser.sablecc.parser.Parser;
-import org.modelinglab.ocl.parser.sablecc.parser.ParserException;
 import org.netbeans.api.editor.mimelookup.MimeRegistration;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
@@ -41,7 +31,6 @@ import org.netbeans.spi.editor.completion.support.AsyncCompletionQuery;
 import org.netbeans.spi.editor.completion.support.AsyncCompletionTask;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataObject;
-import org.openide.util.Exceptions;
 import org.openide.windows.TopComponent;
 
 /**
@@ -238,6 +227,8 @@ public class STMOCLCompletionProvider implements CompletionProvider{
         }
         
         // 5) Find the source operator expression
+        STMOCLCompletionUtils.removeTailWhiteSpaces(sb);
+        STMOCLCompletionUtils.removeWhiteSpacesWrappingOperators(sb);
         int numOpenParenthesis = 0;
         int numOpenBrakets = 0;
         while(sb.length() > 0){
@@ -333,6 +324,8 @@ public class STMOCLCompletionProvider implements CompletionProvider{
         }
 
         // 3) find the source operator expression
+        STMOCLCompletionUtils.removeTailWhiteSpaces(sb);
+        STMOCLCompletionUtils.removeWhiteSpacesWrappingOperators(sb);
         int numOpenParenthesis = 0;
         int numOpenBrakets = 0;
         while(sb.length() > 0){

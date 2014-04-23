@@ -375,4 +375,16 @@ public class STMOCLCompletionUtils {
             sb.deleteCharAt(sb.length()-1);
         }
     }
+    
+    public static void removeWhiteSpacesWrappingOperators(StringBuilder sb) {
+        if(sb == null) {
+            return;
+        }
+        String text = sb.toString();
+
+        text = text.replaceAll("(\\s*)->(\\s*)", "->");
+        text = text.replaceAll("(\\s*)(\\.)(\\s*)", ".");
+        sb.delete(0, sb.length());
+        sb.append(text);
+    }
 }
