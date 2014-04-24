@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems;
+package org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems;
 
 import java.awt.Color;
 import javax.swing.text.JTextComponent;
@@ -14,11 +14,11 @@ import org.netbeans.api.editor.completion.Completion;
  *
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-public class STMOCLErrorCompletionItem extends STMOCLCompletionItem{
+public class OCLErrorCompletionItem extends OCLCompletionItem{
 
     private final String errorMessage;
     
-    public STMOCLErrorCompletionItem(String prefix, int caretOffset, String errorMessage) {
+    public OCLErrorCompletionItem(String prefix, int caretOffset, String errorMessage) {
         super(prefix, caretOffset);
         this.errorMessage = errorMessage;
     }

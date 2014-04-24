@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems;
+package org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems;
 
 import java.util.List;
 import javax.swing.text.JTextComponent;
@@ -15,9 +15,9 @@ import org.modelinglab.ocl.core.ast.Parameter;
  *
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-public class STMOCLDotOrArrowOperationCompletionItem extends STMOCLOperationCompletionItem{
+public class OCLDotOrArrowOperationCompletionItem extends OCLOperationCompletionItem{
 
-    public STMOCLDotOrArrowOperationCompletionItem(Operation op, String prefix, int caretOffset) {
+    public OCLDotOrArrowOperationCompletionItem(Operation op, String prefix, int caretOffset) {
         super(op, prefix, caretOffset);
     }
         

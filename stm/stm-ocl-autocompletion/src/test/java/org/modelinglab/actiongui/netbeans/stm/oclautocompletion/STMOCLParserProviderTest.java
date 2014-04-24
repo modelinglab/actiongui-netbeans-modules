@@ -34,9 +34,9 @@ import org.openide.util.Utilities;
  *
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-public class OCLParserProviderTest {
+public class STMOCLParserProviderTest {
     
-    public OCLParserProviderTest() {
+    public STMOCLParserProviderTest() {
     }
     
     @BeforeClass
@@ -56,16 +56,16 @@ public class OCLParserProviderTest {
     }
 
     /**
-     * Test of getInstance method, of class OCLParserProvider.
+     * Test of getInstance method, of class STMOCLParserProvider.
      */
     @Test
     public void testGetInstance() {
-        OCLParserProvider instance = OCLParserProvider.getInstance();
+        STMOCLParserProvider instance = STMOCLParserProvider.getInstance();
         assertTrue(instance != null);
     }
 
     /**
-     * Test of getParser method, of class OCLParserProvider.
+     * Test of getParser method, of class STMOCLParserProvider.
      * @throws java.lang.Exception
      */
     @Test
@@ -76,7 +76,7 @@ public class OCLParserProviderTest {
         URL securityModelURL = getClass().getResource("Default.stm");
         URI securityModelURI = securityModelURL.toURI();
         Document securityModelDocument = createDocument(securityModelURI);
-        OCLParserProvider instance = OCLParserProvider.getInstance();
+        STMOCLParserProvider instance = STMOCLParserProvider.getInstance();
         
         // 1) TESTING CALLER, SELF, VALUE & TARGET VARIABLES
         // check constraint 1

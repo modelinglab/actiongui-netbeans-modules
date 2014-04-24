@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems;
+package org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems;
 
 import java.awt.Color;
 import javax.swing.text.JTextComponent;
@@ -13,13 +13,13 @@ import javax.swing.text.JTextComponent;
  *
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-public class STMOCLIfThenElseCompletionItem extends STMOCLCompletionItem{
+public class OCLIfThenElseCompletionItem extends OCLCompletionItem{
     
     private final String leftText;
     private final String rightText;
     private final String textToInsert;
     
-    public STMOCLIfThenElseCompletionItem(String prefix, int caretOffset) {
+    public OCLIfThenElseCompletionItem(String prefix, int caretOffset) {
         super(prefix, caretOffset);
         assert "if".startsWith(prefix);
         this.leftText = "if <condition_expr>:Boolean then <then_expr>:T else <else_expr>:T endif        ";

@@ -4,24 +4,24 @@
  * and open the template in the editor.
  */
 
-package org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems;
+package org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems;
 
 import java.awt.Color;
 import javax.swing.text.JTextComponent;
-import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.STMOCLCompletionUtils;
+import org.modelinglab.actiongui.netbeans.autocompletion.ocl.utils.OCLAutocompletionUtils;
 import org.modelinglab.ocl.core.ast.UmlClass;
 
 /**
  *
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-public class STMOCLEntityCompletionItem extends STMOCLCompletionItem{
+public class OCLEntityCompletionItem extends OCLCompletionItem{
 
     private final UmlClass entity;
 
-    public STMOCLEntityCompletionItem(UmlClass entity, String prefix, int caretOffset) {
+    public OCLEntityCompletionItem(UmlClass entity, String prefix, int caretOffset) {
         super(prefix, caretOffset);
-        assert STMOCLCompletionUtils.isEntity(entity);
+        assert OCLAutocompletionUtils.isEntity(entity);
         assert entity.getName().startsWith(prefix);
         this.entity = entity;
     }        

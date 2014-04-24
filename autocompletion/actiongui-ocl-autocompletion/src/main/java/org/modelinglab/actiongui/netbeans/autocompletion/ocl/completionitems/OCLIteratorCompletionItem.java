@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems;
+package org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems;
 
 import java.awt.Color;
 import javax.swing.text.JTextComponent;
@@ -13,14 +13,14 @@ import javax.swing.text.JTextComponent;
  *
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-public class STMOCLIteratorCompletionItem extends STMOCLCompletionItem{
+public class OCLIteratorCompletionItem extends OCLCompletionItem{
 
     private final String nameIterator;
     private final String returnedType;
     private final String bodyType;
     private final String nameItVar;
 
-    public STMOCLIteratorCompletionItem(String nameIterator, String returnedType, String bodyType, String prefix, int caretOffset, String nameItVar) {
+    public OCLIteratorCompletionItem(String nameIterator, String returnedType, String bodyType, String prefix, int caretOffset, String nameItVar) {
         super(prefix, caretOffset);
         assert nameIterator.startsWith(prefix);
         this.nameIterator = nameIterator;

@@ -4,12 +4,12 @@
  * and open the template in the editor.
  */
 
-package org.modelinglab.actiongui.netbeans.stm.oclautocompletion;
+package org.modelinglab.actiongui.netbeans.autocompletion.ocl;
 
 /**
  *
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-public enum STMOCLCompletionState {
+public enum OCLCompletionState {
     OTHER_OPERATOR, DOT_OPERATOR, ARROW_OPERATOR, INIT_EXPR;
 }

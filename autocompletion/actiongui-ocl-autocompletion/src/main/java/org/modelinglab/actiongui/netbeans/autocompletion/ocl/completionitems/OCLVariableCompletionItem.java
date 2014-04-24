@@ -4,54 +4,54 @@
  * and open the template in the editor.
  */
 
-package org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems;
+package org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems;
 
 import java.awt.Color;
 import javax.swing.text.JTextComponent;
-import org.modelinglab.ocl.core.ast.UmlEnumLiteral;
+import org.modelinglab.ocl.core.ast.expressions.Variable;
 
 /**
  *
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-public class STMOCLEnumLiteralCompletionItem extends STMOCLCompletionItem{
+public class OCLVariableCompletionItem extends OCLCompletionItem{
 
-    private final UmlEnumLiteral literal;
+    private final Variable variable;
 
-    public STMOCLEnumLiteralCompletionItem(UmlEnumLiteral literal, String prefix, int caretOffset) {
+    public OCLVariableCompletionItem(Variable variable, String prefix, int caretOffset) {
         super(prefix, caretOffset);
-        assert literal.toString().startsWith(prefix);
-        this.literal = literal;
-    }        
+        assert variable.getName().startsWith(prefix);
+        this.variable = variable;
+    }            
 
     @Override
     public int getSortPriority() {
-        return 4;
+        return 2;
     }
 
     @Override
     public CharSequence getSortText() {
-        return literal.toString();
+        return variable.getName();
     }
 
     @Override
     public CharSequence getInsertPrefix() {
-        return literal.toString();
+        return variable.getName();
     }
     
     @Override
     protected String getTextToInsert() {
-        return literal.toString();
+        return variable.getName();
     }
     
     @Override
     protected String getLeftText() {
-        return literal.toString();
+        return variable.getName();
     }
     
     @Override
     protected String getRightText() {
-        return literal.getType().toString();
+        return variable.getType().toString();
     }
 
     @Override
@@ -61,7 +61,7 @@ public class STMOCLEnumLiteralCompletionItem extends STMOCLCompletionItem{
 
     @Override
     protected Color getColor() {
-        Color c = new Color(222, 184, 135);
+        Color c = new Color(0, 204, 0);
         return c;
     }
 }

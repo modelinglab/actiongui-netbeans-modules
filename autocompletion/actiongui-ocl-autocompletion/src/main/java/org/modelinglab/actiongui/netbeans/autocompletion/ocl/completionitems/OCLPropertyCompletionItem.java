@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems;
+package org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems;
 
 import java.awt.Color;
 import javax.swing.text.JTextComponent;
@@ -16,12 +16,12 @@ import org.modelinglab.ocl.core.ast.types.Classifier;
  *
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-public class STMOCLPropertyCompletionItem extends STMOCLCompletionItem{
+public class OCLPropertyCompletionItem extends OCLCompletionItem{
 
     private final Property property;
     private final boolean fromImplicitCollect;
 
-    public STMOCLPropertyCompletionItem(Property property, boolean fromImplicitCollect, String prefix, int caretOffset) {
+    public OCLPropertyCompletionItem(Property property, boolean fromImplicitCollect, String prefix, int caretOffset) {
         super(prefix, caretOffset);
         assert property.getName().startsWith(prefix);
         this.property = property;

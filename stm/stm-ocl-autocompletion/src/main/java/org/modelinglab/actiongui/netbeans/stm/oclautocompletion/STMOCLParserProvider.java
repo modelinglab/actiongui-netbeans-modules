@@ -28,7 +28,9 @@ import org.modelinglab.actiongui.mm.stm.StmAction.KindOfAction;
 import org.modelinglab.actiongui.mm.stm.StmAuthorizationConstraint;
 import org.modelinglab.actiongui.mm.stm.StmPermission;
 import org.modelinglab.actiongui.mm.stm.StmRole;
-import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.exceptions.STMAutocompletionException;
+import org.modelinglab.actiongui.netbeans.autocompletion.ocl.utils.OCLAutocompletionUtils;
+import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.exceptions.STMOCLAutocompletionException;
+import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.utils.STMOCLAutocompletionUtils;
 import org.modelinglab.actiongui.tasks.stmparser.StmParser;
 import org.modelinglab.actiongui.tasks.stmparser.StmParserRequest;
 import org.modelinglab.mm.source.SourceElement.ElementIdDeclaration;
@@ -76,24 +78,24 @@ import org.openide.util.Utilities;
  * This class obtains an OCL parser each time the auto-completion is activated.
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-public class OCLParserProvider {
-    private static OCLParserProvider instance;
+public class STMOCLParserProvider {
+    private static STMOCLParserProvider instance;
     private final String CALLER = "caller";
     private final String SELF = "self";
     private final String VALUE = "value";
     private final String TARGET = "target";
     
-    private OCLParserProvider(){
+    private STMOCLParserProvider(){
     }
     
-    public static OCLParserProvider getInstance() {
+    public static STMOCLParserProvider getInstance() {
       if(instance == null) {
-         instance = new OCLParserProvider();
+         instance = new STMOCLParserProvider();
       }
       return instance;
     }
 
-    public OclParser getParser(URI dataModelURI, URI securityModelURI, Document securityModelDocument, int caretOffset) throws STMAutocompletionException {        
+    public OclParser getParser(URI dataModelURI, URI securityModelURI, Document securityModelDocument, int caretOffset) throws STMOCLAutocompletionException {        
         // 1) Parse the document to get a stm (secure text model)
         Stm stm = parseSecurityModel(securityModelURI, securityModelDocument);
         
@@ -108,7 +110,7 @@ public class OCLParserProvider {
             namespace = agmi.unserializeNamespace(Utilities.toFile(dataModelURI));
         } 
         catch (AGMavenInterface.AGMavenInterfaceException ex) {
-            throw new STMAutocompletionException(ex.getMessage());
+            throw new STMOCLAutocompletionException(ex.getMessage());
         }
         
         // 4) Build environment with datamodel and stm model information        
@@ -128,7 +130,7 @@ public class OCLParserProvider {
             }
         }        
         if(callerEntity == null) {
-            throw new STMAutocompletionException("There is no entity defined as user (caller) in the data-model.");
+            throw new STMOCLAutocompletionException("There is no entity defined as user (caller) in the data-model.");
         }
         Variable callerVariable = new Variable(CALLER);
         callerVariable.setType(callerEntity);
@@ -150,7 +152,7 @@ public class OCLParserProvider {
             }
         }
         if (permission == null) {
-            throw new STMAutocompletionException("The authorization constraint is not declared within a permission.");
+            throw new STMOCLAutocompletionException("The authorization constraint is not declared within a permission.");
         }
         UmlClass selfType = addSelfVariable(permission, oclParser, caretOffset);
         addValueVariable(permission, selfType, oclParser, caretOffset);
@@ -163,7 +165,7 @@ public class OCLParserProvider {
         return oclParser;
     }
 
-    private UmlClass addSelfVariable(StmPermission permission, OclParser oclParser, int caretOffset) throws STMAutocompletionException {
+    private UmlClass addSelfVariable(StmPermission permission, OclParser oclParser, int caretOffset) throws STMOCLAutocompletionException {
         // 1) Check the actions constrained do not include a create action
         Set<StmAuthorizationConstraint> authorizationConstraints = permission.getAuthorizationConstraints();
         StmAuthorizationConstraint authorizationConstraint = null;
@@ -188,10 +190,10 @@ public class OCLParserProvider {
         String name = permission.getIdDeclaration().getId();      
         Element element = oclParser.getEnv().lookup(name);
         if (element == null) {
-            throw new STMAutocompletionException("The entity '" + name + "' does not exist in the current data model.");
+            throw new STMOCLAutocompletionException("The entity '" + name + "' does not exist in the current data model.");
         }        
         if(!(element instanceof UmlClass)) {
-            throw new STMAutocompletionException("The entity '" + name + "' does not exist in the current data model.");
+            throw new STMOCLAutocompletionException("The entity '" + name + "' does not exist in the current data model.");
         }
         
         UmlClass selfType = (UmlClass)element;
@@ -353,7 +355,7 @@ public class OCLParserProvider {
         env.addElement(targetVariable, false);
     }
     
-    private Stm parseSecurityModel(URI securityModelURI, Document securityModelDocument) throws STMAutocompletionException {        
+    private Stm parseSecurityModel(URI securityModelURI, Document securityModelDocument) throws STMOCLAutocompletionException {        
         // get the text
         String text;
         try {
@@ -361,7 +363,7 @@ public class OCLParserProvider {
             text = securityModelDocument.getText(0, securityModelDocument.getLength());
         } 
         catch (BadLocationException ex) {
-            throw new STMAutocompletionException(ex.getMessage());
+            throw new STMOCLAutocompletionException(ex.getMessage());
         }
         
         // parse the document
@@ -372,7 +374,7 @@ public class OCLParserProvider {
             stmParserResult = stmParser.call();
         } 
         catch (IOException ex) {
-            throw new STMAutocompletionException(ex.getMessage());
+            throw new STMOCLAutocompletionException(ex.getMessage());
         }
 
         // If there are errors --> return an exception witht he first error information.
@@ -391,7 +393,7 @@ public class OCLParserProvider {
                 sb.append("]");
             }
             sb.append(": ").append(sourceError.getErrorMsg());
-            throw new STMAutocompletionException(sb.toString());
+            throw new STMOCLAutocompletionException(sb.toString());
         }
         
         Stm stm = stmParserResult.getOutput();
@@ -411,7 +413,7 @@ public class OCLParserProvider {
         // 1) Get the expression from the beginning to the caret position
         String expr;
         try {
-            expr = STMOCLCompletionUtils.getTextFromCaretToStartSymbol(document, caretOffset).toString();
+            expr = STMOCLAutocompletionUtils.getTextFromCaretToStartSymbol(document, caretOffset).toString();
         }
         catch (BadLocationException ex) {
             return;

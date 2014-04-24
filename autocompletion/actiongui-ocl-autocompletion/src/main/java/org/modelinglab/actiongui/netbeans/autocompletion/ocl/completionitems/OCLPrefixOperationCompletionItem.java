@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems;
+package org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems;
 
 import javax.swing.text.JTextComponent;
 import org.modelinglab.ocl.core.ast.Operation;
@@ -14,9 +14,9 @@ import org.modelinglab.ocl.core.ast.Operation;
  * and contains only the source. E.g.: not, -,...
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-public class STMOCLPrefixOperationCompletionItem extends STMOCLOperationCompletionItem{
+public class OCLPrefixOperationCompletionItem extends OCLOperationCompletionItem{
 
-    public STMOCLPrefixOperationCompletionItem(Operation op, String prefix, int caretOffset) {
+    public OCLPrefixOperationCompletionItem(Operation op, String prefix, int caretOffset) {
         super(op, prefix, caretOffset);
         assert op.getOwnedParameters().isEmpty();
     }

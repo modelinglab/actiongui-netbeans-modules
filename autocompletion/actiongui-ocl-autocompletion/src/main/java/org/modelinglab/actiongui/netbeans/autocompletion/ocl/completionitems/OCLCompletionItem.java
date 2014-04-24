@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems;
+package org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -25,12 +25,12 @@ import org.openide.util.ImageUtilities;
  *
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-public abstract class STMOCLCompletionItem implements CompletionItem{
+public abstract class OCLCompletionItem implements CompletionItem{
     protected final String prefix;
     protected final int caretOffset;
     protected final ImageIcon fieldIcon;
     
-    public STMOCLCompletionItem(String prefix, int caretOffset) {
+    public OCLCompletionItem(String prefix, int caretOffset) {
         this.prefix = prefix;
         this.caretOffset = caretOffset;
         this.fieldIcon = new ImageIcon(ImageUtilities.loadImage("org/modelinglab/actiongui/netbeans/stm/oclautocompletion/ocl.png"));

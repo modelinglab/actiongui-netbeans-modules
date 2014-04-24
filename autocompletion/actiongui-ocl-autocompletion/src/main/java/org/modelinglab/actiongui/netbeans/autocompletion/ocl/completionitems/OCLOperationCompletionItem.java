@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package org.modelinglab.actiongui.netbeans.stm.oclautocompletion.completionitems;
+package org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems;
 
 import java.awt.Color;
 import javax.swing.text.JTextComponent;
@@ -14,11 +14,11 @@ import org.modelinglab.ocl.core.ast.Operation;
  *
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-public abstract class STMOCLOperationCompletionItem extends STMOCLCompletionItem{
+public abstract class OCLOperationCompletionItem extends OCLCompletionItem{
 
     protected Operation op;
 
-    protected STMOCLOperationCompletionItem(Operation op, String prefix, int caretOffset) {
+    protected OCLOperationCompletionItem(Operation op, String prefix, int caretOffset) {
         super(prefix, caretOffset);
         assert op.getName().startsWith(prefix);
         this.op = op;

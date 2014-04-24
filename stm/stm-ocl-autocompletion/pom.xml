@@ -56,11 +56,6 @@
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>org.modelinglab.ocl</groupId>
-            <artifactId>parser</artifactId>
-            <version>1.0.7-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-projectapi</artifactId>
             <version>RELEASE74</version>
@@ -86,21 +81,26 @@
             <type>jar</type>
         </dependency>
         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.modelinglab.actiongui.netbeans.autocompletion</groupId>
+            <artifactId>actiongui-ocl-autocompletion</artifactId>
+            <version>0.2-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
             <groupId>org.modelinglab.actiongui.maven</groupId>
             <artifactId>plugin-tools</artifactId>
             <version>2.5-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>org.modelinglab.actiongui.tasks</groupId>
-            <artifactId>stmparser</artifactId>
-            <version>2.5-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.10</version>
-            <scope>test</scope>
+            <groupId>org.modelinglab.actiongui.netbeans.wrappers</groupId>
+            <artifactId>ag-wrapper-module</artifactId>
         </dependency>
     </dependencies>
 

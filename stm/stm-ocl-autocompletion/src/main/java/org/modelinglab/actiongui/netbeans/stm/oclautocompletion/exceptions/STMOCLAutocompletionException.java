@@ -6,14 +6,20 @@
 
 package org.modelinglab.actiongui.netbeans.stm.oclautocompletion.exceptions;
 
+import org.modelinglab.actiongui.netbeans.autocompletion.ocl.exceptions.OCLAutocompletionException;
+
+
+
+
+
 /**
  *
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-public class STMAutocompletionException extends Exception{
+public class STMOCLAutocompletionException extends OCLAutocompletionException{
     private static final long serialVersionUID = 1L;
 
-    public STMAutocompletionException(String message) {
+    public STMOCLAutocompletionException(String message) {
         super(message);
     } 
 }

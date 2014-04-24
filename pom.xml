@@ -12,6 +12,7 @@
         <module>gtm</module>
         <module>dtm</module>
         <module>stm</module>
+        <module>autocompletion</module>
     </modules>
     
     <properties>
