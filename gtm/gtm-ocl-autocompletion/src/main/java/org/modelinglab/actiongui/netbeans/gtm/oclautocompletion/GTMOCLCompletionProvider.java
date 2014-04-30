@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package org.modelinglab.actiongui.netbeans.stm.oclautocompletion;
+package org.modelinglab.actiongui.netbeans.gtm.oclautocompletion;
 
 import java.net.URI;
 import java.util.Collection;
@@ -15,8 +15,8 @@ import javax.swing.text.StyledDocument;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.OCLCompletionItemsProvider;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLCompletionItem;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLErrorCompletionItem;
-import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.exceptions.STMOCLAutocompletionException;
-import org.modelinglab.actiongui.netbeans.stm.oclautocompletion.utils.STMOCLAutocompletionUtils;
+import org.modelinglab.actiongui.netbeans.gtm.oclautocompletion.exceptions.GTMOCLAutocompletionException;
+import org.modelinglab.actiongui.netbeans.gtm.oclautocompletion.utils.GTMOCLAutocompletionUtils;
 import org.modelinglab.ocl.parser.OclParser;
 import org.netbeans.api.editor.mimelookup.MimeRegistration;
 import org.netbeans.api.project.FileOwnerQuery;
@@ -34,8 +34,8 @@ import org.openide.windows.TopComponent;
  *
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-@MimeRegistration(mimeType = "text/x-stm", service = CompletionProvider.class)
-public class STMOCLCompletionProvider implements CompletionProvider{
+@MimeRegistration(mimeType = "text/x-gtm", service = CompletionProvider.class)
+public class GTMOCLCompletionProvider implements CompletionProvider{
 
     @Override
     public CompletionTask createTask(int queryType, final JTextComponent jtc) {
@@ -47,10 +47,10 @@ public class STMOCLCompletionProvider implements CompletionProvider{
             @Override
             protected void query(CompletionResultSet completionResultSet, Document document, int caretOffset) {                 
                 
-                // 1) Check the cursor position is within an authorization constraint declaration (i.e. between '[' and ']')
-                boolean validPosition;
+                // 1) Check the cursor is in a valid position
+                int caretPosition;
                 try {
-                    validPosition = STMOCLAutocompletionUtils.isValidPosition(document, caretOffset);
+                    caretPosition = GTMOCLAutocompletionUtils.getCaretPosition(document, caretOffset);
                 } 
                 catch (BadLocationException ex) {
                     String errorMessage = "OCL auto-completion is disabled: " + ex.getMessage();
@@ -59,17 +59,22 @@ public class STMOCLCompletionProvider implements CompletionProvider{
                     completionResultSet.finish();
                     return;
                 }
-                
-                if (!validPosition) {
+                // if position is not within square brakets --> error & finish
+                if (caretPosition == 0) {
                     String errorMessage = "OCL auto-completion is disabled: the caret position must be within square brackets '[' and ']'.";
                     OCLErrorCompletionItem item = new OCLErrorCompletionItem(null, caretOffset, errorMessage);
                     completionResultSet.addItem(item);
                     completionResultSet.finish();
                     return;
-                }                                
-                
-                // 2) Get the OCL parser.
-                // 2.1) Get the data model URI
+                }   
+                // if the position is between square brakets, but also between dollars --> finish without error for
+                /// future widget variables auto-completion
+                if (caretPosition == 1) {
+                    completionResultSet.finish();
+                    return;
+                }
+
+                // 2) Get the data model URI
                 Project p = TopComponent.getRegistry().getActivated().getLookup().lookup(Project.class);
                 if (p == null) {
                     DataObject dob = TopComponent.getRegistry().getActivated().getLookup().lookup(DataObject.class);
@@ -106,35 +111,27 @@ public class STMOCLCompletionProvider implements CompletionProvider{
                     return;
                 }
                 URI datamodelURI = datamodelFO.toURI();
-                // 2.2) Get the security model URI
+                
+                // 3) Get the GUI model URI
                 DataObject dob = TopComponent.getRegistry().getActivated().getLookup().lookup(DataObject.class);
                 FileObject fob = dob.getPrimaryFile();
-                URI securitymodelURI = fob.toURI();
+                URI guimodelURI = fob.toURI();
 
-                // 2.3) Obtain the OCL parser
-                STMOCLParserProvider sTMOCLParserProvider = STMOCLParserProvider.getInstance();
+                // 4) Obtain the OCL parser
+                GTMOCLParserProvider parserProvider = GTMOCLParserProvider.getInstance();
                 OclParser parser;
                 try {
-                    parser = sTMOCLParserProvider.getParser(datamodelURI, securitymodelURI, document, caretOffset);
+                    parser = parserProvider.getParser(datamodelURI, guimodelURI, document, caretOffset);
                 } 
-                catch (STMOCLAutocompletionException ex) {
+                catch (GTMOCLAutocompletionException ex) {
                     OCLErrorCompletionItem item = new OCLErrorCompletionItem(null, caretOffset, ex.getMessage());
                     completionResultSet.addItem(item);
                     completionResultSet.finish();
                     return;
                 }
-                
-                // 3) Get the collection of available items for autocompletion
-                StringBuilder expr;
-                try {
-                    expr = STMOCLAutocompletionUtils.getTextFromCaretToStartSymbol(document, caretOffset);
-                } 
-                catch (BadLocationException ex) {
-                    OCLErrorCompletionItem item = new OCLErrorCompletionItem(null, caretOffset, ex.getMessage());
-                    completionResultSet.addItem(item);
-                    completionResultSet.finish();
-                    return;
-                }
+
+                // 5) Get the collection of available items for autocompletion
+                StringBuilder expr = new StringBuilder(parserProvider.getModifiedExpr());
                 OCLCompletionItemsProvider itemsProvider = new OCLCompletionItemsProvider();
                 Collection<OCLCompletionItem> completionItems = itemsProvider.buildOCLCompletionItems(expr, parser, caretOffset);
                 completionResultSet.addAllItems(completionItems);

@@ -8,50 +8,50 @@ package org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems;
 
 import java.awt.Color;
 import javax.swing.text.JTextComponent;
-import org.modelinglab.ocl.core.ast.UmlEnumLiteral;
+import org.modelinglab.ocl.core.ast.UmlClass;
 
 /**
  *
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-public class OCLEnumLiteralCompletionItem extends OCLCompletionItem{
+public class OCLUmlClassCompletionItem extends OCLCompletionItem{
 
-    private final UmlEnumLiteral literal;
+    private final UmlClass ucmlClass;
 
-    public OCLEnumLiteralCompletionItem(UmlEnumLiteral literal, String prefix, int caretOffset) {
-        super(prefix, caretOffset);
-        assert literal.toString().startsWith(prefix);
-        this.literal = literal;
+    public OCLUmlClassCompletionItem(UmlClass umlClass, String prefix, int caretOffset) {
+        super(prefix, caretOffset);  
+        assert umlClass.getName().startsWith(prefix);
+        this.ucmlClass = umlClass;
     }        
 
     @Override
     public int getSortPriority() {
-        return 5;
+        return 4;
     }
 
     @Override
     public CharSequence getSortText() {
-        return literal.toString();
+        return ucmlClass.getName();
     }
 
     @Override
     public CharSequence getInsertPrefix() {
-        return literal.toString();
+        return ucmlClass.getName();
     }
     
     @Override
     protected String getTextToInsert() {
-        return literal.toString();
+        return ucmlClass.getName();
     }
     
     @Override
     protected String getLeftText() {
-        return literal.toString();
+        return ucmlClass.getName();
     }
     
     @Override
     protected String getRightText() {
-        return literal.getType().toString();
+        return ucmlClass.getClassifierType().toString();
     }
 
     @Override
@@ -61,7 +61,7 @@ public class OCLEnumLiteralCompletionItem extends OCLCompletionItem{
 
     @Override
     protected Color getColor() {
-        Color c = new Color(222, 184, 135);
+        Color c = new Color(165, 42, 42);
         return c;
     }
 }

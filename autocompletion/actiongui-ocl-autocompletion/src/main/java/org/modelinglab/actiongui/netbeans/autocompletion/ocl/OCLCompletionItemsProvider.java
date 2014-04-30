@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import javax.swing.text.BadLocationException;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLCompletionItem;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLDotOrArrowOperationCompletionItem;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLEntityCompletionItem;
@@ -22,6 +21,7 @@ import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCL
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLOtherOperationCompletionItem;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLPrefixOperationCompletionItem;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLPropertyCompletionItem;
+import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLUmlClassCompletionItem;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLVariableCompletionItem;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.exceptions.OCLAutocompletionException;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.utils.OCLAutocompletionUtils;
@@ -37,42 +37,36 @@ import org.modelinglab.ocl.core.ast.UmlEnumLiteral;
 import org.modelinglab.ocl.core.ast.expressions.OclExpression;
 import org.modelinglab.ocl.core.ast.expressions.Variable;
 import org.modelinglab.ocl.core.ast.types.Classifier;
+import org.modelinglab.ocl.core.ast.types.ClassifierType;
 import org.modelinglab.ocl.core.ast.types.CollectionType;
 import org.modelinglab.ocl.core.ast.types.PrimitiveType;
 import org.modelinglab.ocl.core.exceptions.OclException;
 import org.modelinglab.ocl.core.standard.OclStandardIterators;
+import org.modelinglab.ocl.ext.time.UmlWrapperClass;
 import org.modelinglab.ocl.parser.OclLexerException;
 import org.modelinglab.ocl.parser.OclParser;
 import org.modelinglab.ocl.parser.OclParserException;
+import org.openide.util.Exceptions;
 
 /**
  *
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
 public class OCLCompletionItemsProvider {
-    private static OCLCompletionItemsProvider instance;
 
-    private OCLCompletionItemsProvider() {
-    }
-    
-    public static OCLCompletionItemsProvider getInstance() {
-      if(instance == null) {
-         instance = new OCLCompletionItemsProvider();
-      }
-      return instance;
-    }
-    
     public Collection<OCLCompletionItem> buildOCLCompletionItems(StringBuilder expr, OclParser parser, int caretOffset) {
         Collection<OCLCompletionItem> completionItems;
          
         // 1) Analyze if the completion case is either dot_operator or arrow_operator
-        completionItems = analyzeDotOrArrowOperatorCase(expr, caretOffset, parser);
+        StringBuilder sb = new StringBuilder(expr.toString());
+        completionItems = analyzeDotOrArrowOperatorCase(sb, caretOffset, parser);
         if(completionItems != null) {
             return completionItems;
         }
         
         // 2) Analyze if the completion case is either other_operator or init_expr
-        completionItems = analyzeInitExprOrOtherOperatorCase(expr, caretOffset, parser);
+        sb = new StringBuilder(expr.toString());
+        completionItems = analyzeInitExprOrOtherOperatorCase(sb, caretOffset, parser);
 
         assert completionItems != null;
         
@@ -82,11 +76,10 @@ public class OCLCompletionItemsProvider {
     /**
      * If the auto-completion case is either dot_operator or arrow_operator, then it returns the available collection
      * of completion items.
-     * @param document
+     * @param sb
      * @param caretOffset
      * @param parser
-     * @return
-     * @throws BadLocationException 
+     * @return 
      */
     private Collection<OCLCompletionItem> analyzeDotOrArrowOperatorCase(StringBuilder sb, int caretOffset, OclParser parser){
         OCLCompletionState state = null;
@@ -182,11 +175,10 @@ public class OCLCompletionItemsProvider {
     /**
      * If the auto-completion case is either init_expr or other_operator, then it returns the available collection
      * of completion items.
-     * @param document
+     * @param sb
      * @param caretOffset
      * @param parser
-     * @return
-     * @throws BadLocationException 
+     * @return 
      */
     private Collection<OCLCompletionItem> analyzeInitExprOrOtherOperatorCase(StringBuilder sb, int caretOffset, OclParser parser) {
         StringBuilder expBeforeOperator = new StringBuilder("");
@@ -275,7 +267,7 @@ public class OCLCompletionItemsProvider {
         return completionItems;
     }   
     
-    private static OCLIteratorCompletionItem buildOCLIteratorCompletionItem(String nameIterator, CollectionType sourceType, String prefix, int caretOffset, OclParser parser) throws OCLAutocompletionException {
+    private OCLIteratorCompletionItem buildOCLIteratorCompletionItem(String nameIterator, CollectionType sourceType, String prefix, int caretOffset, OclParser parser) throws OCLAutocompletionException {
         String returnedType = null;
         String bodyType = null;
         switch(nameIterator){
@@ -327,15 +319,15 @@ public class OCLCompletionItemsProvider {
         return item;
     }
 
-    private static Collection<OCLCompletionItem> buildDotOrArrowOperatorCompletionItems(OclExpression sourceExpr, String accumulator, OclParser parser, int caretOffset, OCLCompletionState state) {
+    private Collection<OCLCompletionItem> buildDotOrArrowOperatorCompletionItems(OclExpression sourceExpr, String accumulator, OclParser parser, int caretOffset, OCLCompletionState state) {
         Collection<OCLCompletionItem> completionItems = new ArrayList<>();
 
-        // 1) get the tye of the source expr
+        // 1) get the type of the source expr
         Classifier typeSourceExpr = sourceExpr.getType();
 
         // 2) Find:
         //      2.1) If the type is a collection or not. It is needed for properties and iterators.
-        //      2.1) If the type is an umlclass or not. It is needed for properties.
+        //      2.2) If the type is a umlclass or not. It is needed for properties.
         boolean isCollection = false;
         UmlClass umlClass = null;
         if(typeSourceExpr instanceof CollectionType) {
@@ -349,7 +341,6 @@ public class OCLCompletionItemsProvider {
         else if(typeSourceExpr instanceof UmlClass){
             umlClass = (UmlClass) typeSourceExpr;                
         }
-
 
         // 3) Get all operations that match with the type of the parsed expression, as source of the operation,
         //      except the operations "not" and "-" (negative), because they start with the name of the operation.
@@ -421,7 +412,7 @@ public class OCLCompletionItemsProvider {
         return completionItems;
     }
 
-    private static Collection<OCLCompletionItem> buildOtherOperatorCompletionItems(OclExpression sourceExpr, String accumulator, OclParser parser, int caretOffset) {
+    private Collection<OCLCompletionItem> buildOtherOperatorCompletionItems(OclExpression sourceExpr, String accumulator, OclParser parser, int caretOffset) {
         Collection<OCLCompletionItem> completionItems = new ArrayList<>();
         
         // 1) get the type of the source expr
@@ -449,7 +440,7 @@ public class OCLCompletionItemsProvider {
         return completionItems;
     }
 
-    private static Collection<OCLCompletionItem> buildInitExprCompletionItems(String accumulator, OclParser parser, int caretOffset) {
+    private Collection<OCLCompletionItem> buildInitExprCompletionItems(String accumulator, OclParser parser, int caretOffset) {
         Collection<OCLCompletionItem> completionItems = new ArrayList<>();
         StaticEnvironment env = parser.getEnv();
         
@@ -475,6 +466,11 @@ public class OCLCompletionItemsProvider {
         for (Element element : ownedMembers) {
             if(element instanceof Variable) {
                 Variable variable = (Variable) element;
+                // if variable contains annotations, it means that the varibale comes from other language different
+                // than OCL language --> skip
+                if(!variable.getAllAnnotations().isEmpty()) {
+                    continue;
+                }
                 String name = variable.getName();
                 if(!name.startsWith(accumulator)) {
                     continue;
@@ -495,7 +491,18 @@ public class OCLCompletionItemsProvider {
             completionItems.add(item);
         }
         
-        // 5) Add all enumerations
+        // 5) Add other uml classes that are not entities
+        Set<UmlClass> otherUmlClasses = OCLAutocompletionUtils.getOtherUmlClasses(env);
+        for (UmlClass umlClass : otherUmlClasses) {
+            String name = umlClass.getName();
+            if(!name.startsWith(accumulator)) {
+                continue;
+            }
+            OCLUmlClassCompletionItem item = new OCLUmlClassCompletionItem(umlClass, accumulator, caretOffset);
+            completionItems.add(item);
+        }
+        
+        // 6) Add all enumerations
         Set<UmlEnum> enumerations = OCLAutocompletionUtils.getEnumerations(env);
         for (UmlEnum umlEnum : enumerations) {
             List<UmlEnumLiteral> literals = umlEnum.getLiterals();

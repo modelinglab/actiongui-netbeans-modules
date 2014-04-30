@@ -205,6 +205,17 @@ public class OCLAutocompletionUtils {
         return entities;
     }
     
+    public static Set<UmlClass> getOtherUmlClasses(StaticEnvironment env) {
+        Set<UmlClass> allClasses = env.getAllClasses();
+        Set<UmlClass> entities = new HashSet<>();
+        for (UmlClass umlClass : allClasses) {
+            if(!isEntity(umlClass)){
+                entities.add(umlClass);
+            }
+        }
+        return entities;
+    }
+    
     public static Set<UmlEnum> getEnumerations(StaticEnvironment env) {
         Set<UmlClass> allClasses = env.getAllClasses();
         Set<UmlEnum> enumerations = new HashSet<>();

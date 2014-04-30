@@ -16,5 +16,6 @@
         <module>gtm-file</module>
         <module>gtm-language</module>
         <module>gtm-braces-matcher</module>
+        <module>gtm-ocl-autocompletion</module>
     </modules>
 </project>
