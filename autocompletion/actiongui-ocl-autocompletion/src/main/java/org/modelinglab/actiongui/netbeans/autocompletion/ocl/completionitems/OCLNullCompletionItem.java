@@ -8,28 +8,22 @@ package org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems;
 
 import java.awt.Color;
 import javax.swing.text.JTextComponent;
-import org.netbeans.api.editor.completion.Completion;
+import org.modelinglab.ocl.core.values.VoidValue;
 
 /**
  *
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-public class OCLErrorCompletionItem extends OCLCompletionItem{
-
-    private final String errorMessage;
+public class OCLNullCompletionItem extends OCLCompletionItem{
     
-    public OCLErrorCompletionItem(String prefix, int caretOffset, String errorMessage) {
-        super(prefix, caretOffset);
-        this.errorMessage = errorMessage;
+    private final VoidValue voidValue;
+    
+    public OCLNullCompletionItem(String prefix, int caretOffset) {
+        super(prefix, caretOffset); 
+        this.voidValue = VoidValue.instantiate();
+        assert voidValue.toString().startsWith(prefix);
     }
 
-    @Override
-    public void defaultAction(JTextComponent component) {
-        Completion.get().hideAll();
-    }
-
-    
-    
     @Override
     public int getSortPriority() {
         return 0;
@@ -37,35 +31,37 @@ public class OCLErrorCompletionItem extends OCLCompletionItem{
 
     @Override
     public CharSequence getSortText() {
-        return errorMessage;
+        return voidValue.toString();
     }
 
     @Override
     public CharSequence getInsertPrefix() {
-        return errorMessage;
+        return voidValue.toString();
     }
 
     @Override
     protected String getTextToInsert() {
-        return "";
+        return voidValue.toString();
     }
-
+        
     @Override
     protected String getLeftText() {
-        return errorMessage;
+        return voidValue.toString();
     }
 
     @Override
     protected String getRightText() {
-        return "";
-    }
-
-    @Override
-    protected void setCaretOffset(JTextComponent component) {
+        return voidValue.getType().toString();
     }
 
     @Override
     protected Color getColor() {
-        return Color.RED;
+        return Color.BLACK;
     }
+
+    @Override
+    protected void setCaretOffset(JTextComponent component) {
+
+    }
+    
 }

@@ -33,7 +33,7 @@ public abstract class OCLCompletionItem implements CompletionItem{
     public OCLCompletionItem(String prefix, int caretOffset) {
         this.prefix = prefix;
         this.caretOffset = caretOffset;
-        this.fieldIcon = new ImageIcon(ImageUtilities.loadImage("org/modelinglab/actiongui/netbeans/stm/oclautocompletion/ocl.png"));
+        this.fieldIcon = new ImageIcon(ImageUtilities.loadImage("org/modelinglab/actiongui/netbeans/autocompletion/ocl/ocl.png"));
     }
     
     @Override

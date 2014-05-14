@@ -17,7 +17,9 @@ import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCL
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLEntityCompletionItem;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLEnumLiteralCompletionItem;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLIfThenElseCompletionItem;
+import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLInvalidCompletionItem;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLIteratorCompletionItem;
+import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLNullCompletionItem;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLOtherOperationCompletionItem;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLPrefixOperationCompletionItem;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLPropertyCompletionItem;
@@ -37,16 +39,15 @@ import org.modelinglab.ocl.core.ast.UmlEnumLiteral;
 import org.modelinglab.ocl.core.ast.expressions.OclExpression;
 import org.modelinglab.ocl.core.ast.expressions.Variable;
 import org.modelinglab.ocl.core.ast.types.Classifier;
-import org.modelinglab.ocl.core.ast.types.ClassifierType;
 import org.modelinglab.ocl.core.ast.types.CollectionType;
 import org.modelinglab.ocl.core.ast.types.PrimitiveType;
 import org.modelinglab.ocl.core.exceptions.OclException;
 import org.modelinglab.ocl.core.standard.OclStandardIterators;
-import org.modelinglab.ocl.ext.time.UmlWrapperClass;
+import org.modelinglab.ocl.core.values.InvalidValue;
+import org.modelinglab.ocl.core.values.VoidValue;
 import org.modelinglab.ocl.parser.OclLexerException;
 import org.modelinglab.ocl.parser.OclParser;
 import org.modelinglab.ocl.parser.OclParserException;
-import org.openide.util.Exceptions;
 
 /**
  *
@@ -444,9 +445,17 @@ public class OCLCompletionItemsProvider {
         Collection<OCLCompletionItem> completionItems = new ArrayList<>();
         StaticEnvironment env = parser.getEnv();
         
-        // 1) Add if statement
+        // 1) Add if statement, null and invalid literals.
         if("if".startsWith(accumulator)) {
             OCLIfThenElseCompletionItem item = new OCLIfThenElseCompletionItem(accumulator, caretOffset);
+            completionItems.add(item);
+        }
+        if(VoidValue.instantiate().toString().startsWith(accumulator)) {
+            OCLNullCompletionItem item = new OCLNullCompletionItem(accumulator, caretOffset);
+            completionItems.add(item);
+        }
+        if(InvalidValue.instantiate().toString().startsWith(accumulator)) {
+            OCLInvalidCompletionItem item = new OCLInvalidCompletionItem(accumulator, caretOffset);
             completionItems.add(item);
         }
         

@@ -69,6 +69,6 @@ public class OCLIteratorCompletionItem extends OCLCompletionItem{
 
     @Override
     protected Color getColor() {
-        return Color.RED;
+        return Color.PINK;
     }
 }
