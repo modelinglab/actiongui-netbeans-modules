@@ -47,32 +47,27 @@ public class GTMOCLCompletionProvider implements CompletionProvider{
             @Override
             protected void query(CompletionResultSet completionResultSet, Document document, int caretOffset) {                 
                 
-                // 1) Check the cursor is in a valid position
+                // 1) Check the cursor is in a valid position, hidding the errors because of the other
+                // auto-completion providers for the same language
                 int caretPosition;
                 try {
                     caretPosition = GTMOCLAutocompletionUtils.getCaretPosition(document, caretOffset);
                 } 
                 catch (BadLocationException ex) {
-                    String errorMessage = "OCL auto-completion is disabled: " + ex.getMessage();
-                    OCLErrorCompletionItem item = new OCLErrorCompletionItem(null, caretOffset, errorMessage);
-                    completionResultSet.addItem(item);
-                    completionResultSet.finish();
+                    //String errorMessage = "OCL auto-completion is disabled: " + ex.getMessage();
+                    //OCLErrorCompletionItem item = new OCLErrorCompletionItem(null, caretOffset, errorMessage);
+                    //completionResultSet.addItem(item);
+                    //completionResultSet.finish();
                     return;
                 }
-                // if position is not within square brakets --> error & finish
-                if (caretPosition == 0) {
-                    String errorMessage = "OCL auto-completion is disabled: the caret position must be within square brackets '[' and ']'.";
-                    OCLErrorCompletionItem item = new OCLErrorCompletionItem(null, caretOffset, errorMessage);
-                    completionResultSet.addItem(item);
+                // if position is not within square brakets --> finish
+                if (caretPosition == 0 || caretPosition == 1) {
+                    //String errorMessage = "OCL auto-completion is disabled: the caret position must be within square brackets '[' and ']'.";
+                    //OCLErrorCompletionItem item = new OCLErrorCompletionItem(null, caretOffset, errorMessage);
+                    //completionResultSet.addItem(item);
                     completionResultSet.finish();
                     return;
                 }   
-                // if the position is between square brakets, but also between dollars --> finish without error for
-                /// future widget variables auto-completion
-                if (caretPosition == 1) {
-                    completionResultSet.finish();
-                    return;
-                }
 
                 // 2) Get the data model URI
                 Project p = TopComponent.getRegistry().getActivated().getLookup().lookup(Project.class);

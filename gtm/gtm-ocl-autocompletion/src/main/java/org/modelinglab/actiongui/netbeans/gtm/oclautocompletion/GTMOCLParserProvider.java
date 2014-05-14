@@ -556,26 +556,9 @@ public class GTMOCLParserProvider {
 
         @Override
         public void inAGtmExp(AGtmExp node) {
-            SourceSection sourceSection = standardGtm.getSourceSection(node);            
-            int extraStart = 0;
-            int extraEnd = 1;
-            LinkedList<PGtmExpBase> gtmExpBase = node.getGtmExpBase();
-            if(!gtmExpBase.isEmpty()) {
-                // calculate extra start
-                PGtmExpBase first = gtmExpBase.getFirst();
-                if(first instanceof AVarGtmExpBase) {
-                    extraStart = -1;
-                }
-                // calculate extra end
-                for (PGtmExpBase pGtmExpBase : gtmExpBase) {
-                    if(pGtmExpBase instanceof AVarGtmExpBase) {
-                        extraEnd += 2;
-                    }
-                }
-            }
-            
-            int startPosition = sourceSection.getStartPosition().getOffset() + extraStart;
-            int endPosition = sourceSection.getEndPosition().getOffset() + extraEnd;
+            SourceSection sourceSection = standardGtm.getSourceSection(node);
+            int startPosition = sourceSection.getStartPosition().getOffset();
+            int endPosition = sourceSection.getEndPosition().getOffset();
             if(startPosition <= gtmExprPosition && endPosition >= gtmExprPosition) {
                 gtmExpr = node;
             }
