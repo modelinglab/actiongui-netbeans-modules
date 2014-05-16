@@ -4,8 +4,9 @@
  * and open the template in the editor.
  */
 
-package org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems;
+package org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.variables;
 
+import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.variables.GTMVariableCompletionItem;
 import java.awt.Color;
 import javax.swing.text.JTextComponent;
 import org.modelinglab.ocl.core.ast.types.Classifier;
@@ -14,7 +15,7 @@ import org.modelinglab.ocl.core.ast.types.Classifier;
  *
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-public class GTMTemporalVariableCompletionItem extends GTMCompletionItem{
+public class GTMTemporalVariableCompletionItem extends GTMVariableCompletionItem{
     private final String idVar;
     private final Classifier typeVar;
     
@@ -28,7 +29,7 @@ public class GTMTemporalVariableCompletionItem extends GTMCompletionItem{
 
     @Override
     public int getSortPriority() {
-        return 1;
+        return 3;
     }
 
     @Override

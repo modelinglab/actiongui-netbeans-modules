@@ -6,6 +6,7 @@
 
 package org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems;
 
+import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.variables.GTMVariableCompletionItem;
 import java.awt.Color;
 import javax.swing.text.JTextComponent;
 import org.netbeans.api.editor.completion.Completion;
@@ -14,7 +15,7 @@ import org.netbeans.api.editor.completion.Completion;
  *
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-public class GTMErrorCompletionItem extends GTMCompletionItem{
+public class GTMErrorCompletionItem extends GTMVariableCompletionItem{
 
     private final String errorMessage;
     

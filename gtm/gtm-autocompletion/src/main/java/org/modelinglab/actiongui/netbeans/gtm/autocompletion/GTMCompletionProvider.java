@@ -22,10 +22,10 @@ import org.modelinglab.actiongui.maven.tools.AGMavenInterfaceFactory;
 import org.modelinglab.actiongui.mm.gtm.Gtm;
 import org.modelinglab.actiongui.mm.gtm.StandardGtm;
 import org.modelinglab.actiongui.mm.gtm.node.Node;
-import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.GTMCompletionItem;
 import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.GTMErrorCompletionItem;
-import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.GTMTemporalVariableCompletionItem;
-import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.GTMWidgetVariableCompletionItem;
+import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.variables.GTMTemporalVariableCompletionItem;
+import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.variables.GTMWidgetVariableCompletionItem;
+import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.statements.GTMStatementCompletionItem;
 import org.modelinglab.actiongui.netbeans.gtm.autocompletion.exceptions.GTMAutocompletionException;
 import org.modelinglab.actiongui.netbeans.gtm.autocompletion.utils.GTMAutocompletionUtils;
 import org.modelinglab.actiongui.tasks.gtmanalyzer.analysis.utils.UtilsGtmA;
@@ -41,6 +41,7 @@ import org.modelinglab.ocl.parser.OclParser;
 import org.netbeans.api.editor.mimelookup.MimeRegistration;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
+import org.netbeans.spi.editor.completion.CompletionItem;
 import org.netbeans.spi.editor.completion.CompletionProvider;
 import org.netbeans.spi.editor.completion.CompletionResultSet;
 import org.netbeans.spi.editor.completion.CompletionTask;
@@ -48,7 +49,6 @@ import org.netbeans.spi.editor.completion.support.AsyncCompletionQuery;
 import org.netbeans.spi.editor.completion.support.AsyncCompletionTask;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataObject;
-import org.openide.util.Exceptions;
 import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 
@@ -142,7 +142,7 @@ public class GTMCompletionProvider implements CompletionProvider{
                 // 5) Get the auto-completion cases taking into account the caret position
                 Collection<GTMAutocompletionCase> autocompletionCases = utils.getAutocompletionCases(standardGtm, caretOffset);
                 for (GTMAutocompletionCase autocompletionCase : autocompletionCases) {
-                    Collection<GTMCompletionItem> completionItems;
+                    Collection<CompletionItem> completionItems;
                     switch(autocompletionCase) {
                         case VARIABLES: {
                             try {
@@ -158,7 +158,7 @@ public class GTMCompletionProvider implements CompletionProvider{
                         }
                         case ACTIONS: {
                             try {
-                                completionItems = buildActionItems();
+                                completionItems = buildActionItems(document, caretOffset);
                                 completionResultSet.addAllItems(completionItems);
                             } 
                             catch (GTMAutocompletionException ex) {
@@ -263,8 +263,8 @@ public class GTMCompletionProvider implements CompletionProvider{
         return standardGtm;
     }
     
-    private Collection<GTMCompletionItem> buildVariableItems(Namespace namespace, StandardGtm standardGtm, Document document, int caretOffset) throws GTMAutocompletionException {
-        Collection<GTMCompletionItem> items = new ArrayList<>();
+    private Collection<CompletionItem> buildVariableItems(Namespace namespace, StandardGtm standardGtm, Document document, int caretOffset) throws GTMAutocompletionException {
+        Collection<CompletionItem> items = new ArrayList<>();
         
         // 1) Calculate the accumulator
         StringBuilder accumulator = new StringBuilder();
@@ -278,7 +278,7 @@ public class GTMCompletionProvider implements CompletionProvider{
         }
         while(sb.length() > 0) {
             char charAt = sb.charAt(sb.length()-1);
-            if(Character.isLetterOrDigit(charAt) || charAt == '.') {
+            if(Character.isLetterOrDigit(charAt) || charAt == '.' || charAt == '_') {
                 accumulator.append(charAt);
             }
             else {
@@ -314,10 +314,30 @@ public class GTMCompletionProvider implements CompletionProvider{
         return items;
     }
 
-    private Collection<GTMCompletionItem> buildActionItems() throws GTMAutocompletionException{
-        Collection<GTMCompletionItem> items = new ArrayList<>();
-        //TODO
-        return items;
+    private Collection<CompletionItem> buildActionItems(Document document, int caretOffset) throws GTMAutocompletionException{
+        // 1) Calculate the accumulator
+        StringBuilder accumulator = new StringBuilder();
+        StringBuilder sb;
+        try {
+            String textBefore = document.getText(document.getStartPosition().getOffset(), caretOffset);
+            sb = new StringBuilder(textBefore);
+        } 
+        catch (BadLocationException ex) {
+            throw new GTMAutocompletionException("Error getting the text before the cursor.");
+        }
+        while(sb.length() > 0) {
+            char charAt = sb.charAt(sb.length()-1);
+            if(GTMStatementCompletionItem.isValidStatementChar(charAt)) {
+                accumulator.append(charAt);
+            }
+            else {
+                break;
+            }
+            sb.deleteCharAt(sb.length()-1);
+        }
+        accumulator.reverse();
+        
+        return utils.getAllStatements(accumulator.toString(), caretOffset);
     }
 }
         

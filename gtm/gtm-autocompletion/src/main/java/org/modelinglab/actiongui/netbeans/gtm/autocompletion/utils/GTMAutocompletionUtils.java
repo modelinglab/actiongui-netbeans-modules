@@ -6,6 +6,7 @@
 
 package org.modelinglab.actiongui.netbeans.gtm.autocompletion.utils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,7 +35,26 @@ import org.modelinglab.actiongui.mm.gtm.node.Node;
 import org.modelinglab.actiongui.mm.gtm.node.PWidget;
 import org.modelinglab.actiongui.mm.gtm.utils.UtilsGtm;
 import org.modelinglab.actiongui.netbeans.gtm.autocompletion.GTMAutocompletionCase;
+import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.statements.GTMForeachStatementCompletionItem;
+import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.statements.GTMIfThenElseStatementCompletionItem;
+import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.statements.GTMIfThenStatementCompletionItem;
+import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.statements.GTMTryCatchStatementCompletionItem;
+import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.statements.actions.GTMAddPropertyActionCompletionItem;
+import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.statements.actions.GTMBackActionCompletionItem;
+import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.statements.actions.GTMDeleteActionCompletionItem;
+import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.statements.actions.GTMExitActionCompletionItem;
+import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.statements.actions.GTMMethodCallActionCompletionItem;
+import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.statements.actions.GTMNewActionCompletionItem;
+import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.statements.actions.GTMNotificationActionCompletionItem;
+import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.statements.actions.GTMOpenActionCompletionItem;
+import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.statements.actions.GTMReevaluateActionCompletionItem;
+import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.statements.actions.GTMRemovePropertyActionCompletionItem;
+import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.statements.actions.GTMSetActionCompletionItem;
+import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.statements.actions.GTMSetLocateActionCompletionItem;
+import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.statements.actions.GTMSetMethodCallActionCompletionItem;
+import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.statements.actions.GTMUpdateActionCompletionItem;
 import org.modelinglab.ocl.core.ast.types.Classifier;
+import org.netbeans.spi.editor.completion.CompletionItem;
 
 /**
  *
@@ -86,6 +106,68 @@ public class GTMAutocompletionUtils {
         return textToParse;
     }
 
+    public Collection<CompletionItem> getAllStatements(String prefix, int caretOffset) {
+        Collection<CompletionItem> statements = new ArrayList<>();
+        // add statements
+        if(GTMIfThenStatementCompletionItem.NAME_STATEMENT.startsWith(prefix)) {
+            statements.add(new GTMIfThenStatementCompletionItem(prefix, caretOffset));
+        }
+        if(GTMIfThenElseStatementCompletionItem.NAME_STATEMENT.startsWith(prefix)) {
+            statements.add(new GTMIfThenElseStatementCompletionItem(prefix, caretOffset));
+        }
+        if(GTMForeachStatementCompletionItem.NAME_STATEMENT.startsWith(prefix)) {
+            statements.add(new GTMForeachStatementCompletionItem(prefix, caretOffset));
+        }
+        if(GTMTryCatchStatementCompletionItem.NAME_STATEMENT.startsWith(prefix)) {
+            statements.add(new GTMTryCatchStatementCompletionItem(prefix, caretOffset));
+        }
+        
+        // add actions
+        if(GTMAddPropertyActionCompletionItem.NAME_ACTION.startsWith(prefix)) {
+            statements.add(new GTMAddPropertyActionCompletionItem(prefix, caretOffset));
+        }
+        if(GTMBackActionCompletionItem.NAME_ACTION.startsWith(prefix)) {
+            statements.add(new GTMBackActionCompletionItem(prefix, caretOffset));
+        }
+        if(GTMDeleteActionCompletionItem.NAME_ACTION.startsWith(prefix)) {
+            statements.add(new GTMDeleteActionCompletionItem(prefix, caretOffset));
+        }
+        if(GTMExitActionCompletionItem.NAME_ACTION.startsWith(prefix)) {
+            statements.add(new GTMExitActionCompletionItem(prefix, caretOffset));
+        }
+        if(GTMMethodCallActionCompletionItem.NAME_ACTION.startsWith(prefix)) {
+            statements.add(new GTMMethodCallActionCompletionItem(prefix, caretOffset));
+        }
+        if(GTMNewActionCompletionItem.NAME_ACTION.startsWith(prefix)) {
+            statements.add(new GTMNewActionCompletionItem(prefix, caretOffset));
+        }
+        if(GTMNotificationActionCompletionItem.NAME_ACTION.startsWith(prefix)) {
+            statements.add(new GTMNotificationActionCompletionItem(prefix, caretOffset));
+        }
+        if(GTMOpenActionCompletionItem.NAME_ACTION.startsWith(prefix)) {
+            statements.add(new GTMOpenActionCompletionItem(prefix, caretOffset));
+        }
+        if(GTMReevaluateActionCompletionItem.NAME_ACTION.startsWith(prefix)) {
+            statements.add(new GTMReevaluateActionCompletionItem(prefix, caretOffset));
+        }
+        if(GTMRemovePropertyActionCompletionItem.NAME_ACTION.startsWith(prefix)) {
+            statements.add(new GTMRemovePropertyActionCompletionItem(prefix, caretOffset));
+        }
+        if(GTMSetActionCompletionItem.NAME_ACTION.startsWith(prefix)) {
+            statements.add(new GTMSetActionCompletionItem(prefix, caretOffset));
+        }
+        if(GTMSetLocateActionCompletionItem.NAME_ACTION.startsWith(prefix)) {
+            statements.add(new GTMSetLocateActionCompletionItem(prefix, caretOffset));
+        }
+        if(GTMSetMethodCallActionCompletionItem.NAME_ACTION.startsWith(prefix)) {
+            statements.add(new GTMSetMethodCallActionCompletionItem(prefix, caretOffset));
+        }
+        if(GTMUpdateActionCompletionItem.NAME_ACTION.startsWith(prefix)) {
+            statements.add(new GTMUpdateActionCompletionItem(prefix, caretOffset));
+        }
+        return statements;
+    }
+    
     public Collection<GTMAutocompletionCase> getAutocompletionCases(StandardGtm standardGtm, int caretOffset) {
         GtmStateCollectorDFA collectorDFA = new GtmStateCollectorDFA(standardGtm, caretOffset);
         standardGtm.getMergedGtmModel().apply(collectorDFA);
@@ -166,6 +248,14 @@ public class GTMAutocompletionUtils {
 
         @Override
         public void inAGtmExp(AGtmExp node) {
+            // These cases are necessary to avoid problems with nodes created by the syntactic sugar module
+            if(node.getLBracket() == null || node.getRBracket() == null) {
+                return;
+            }
+            if(standardGtm.getSourceSection(node.getLBracket()) == null || standardGtm.getSourceSection(node.getRBracket()) == null) {
+                return;
+            }
+            
             int start = standardGtm.getSourceSection(node.getLBracket()).getEndPosition().getOffset();
             int end = standardGtm.getSourceSection(node.getRBracket()).getStartPosition().getOffset();
             if(start < caretPosition && end >= caretPosition) {
@@ -296,6 +386,14 @@ public class GTMAutocompletionUtils {
         }
 
         private boolean checkInside(Node startNode, Node endNode) {
+            // These cases are necessary to avoid problems with nodes created by the syntactic sugar module
+            if(startNode == null || endNode == null) {
+                return false;
+            }
+            if(standardGtm.getSourceSection(startNode) == null || standardGtm.getSourceSection(endNode) == null) {
+                return false;
+            }
+            
             int start = standardGtm.getSourceSection(startNode).getEndPosition().getOffset();
             int end = standardGtm.getSourceSection(endNode).getStartPosition().getOffset();
             if(start < caretPosition && end >= caretPosition) {

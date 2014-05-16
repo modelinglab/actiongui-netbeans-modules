@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems;
+package org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.variables;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -25,15 +25,15 @@ import org.openide.util.ImageUtilities;
  *
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-public abstract class GTMCompletionItem implements CompletionItem{
+public abstract class GTMVariableCompletionItem implements CompletionItem{
     protected final String prefix;
     protected final int caretOffset;
     protected final ImageIcon fieldIcon;
     
-    public GTMCompletionItem(String prefix, int caretOffset) {
+    public GTMVariableCompletionItem(String prefix, int caretOffset) {
         this.prefix = prefix;
         this.caretOffset = caretOffset;
-        this.fieldIcon = new ImageIcon(ImageUtilities.loadImage("org/modelinglab/actiongui/netbeans/gtm/autocompletion/gui.png"));
+        this.fieldIcon = new ImageIcon(ImageUtilities.loadImage("org/modelinglab/actiongui/netbeans/gtm/autocompletion/variable.png"));
     }
     
     @Override

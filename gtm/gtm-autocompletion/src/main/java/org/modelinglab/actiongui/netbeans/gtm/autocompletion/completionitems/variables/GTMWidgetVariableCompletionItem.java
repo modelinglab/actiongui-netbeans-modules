@@ -4,8 +4,9 @@
  * and open the template in the editor.
  */
 
-package org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems;
+package org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.variables;
 
+import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.variables.GTMVariableCompletionItem;
 import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +18,7 @@ import org.modelinglab.ocl.core.ast.types.Classifier;
  *
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-public class GTMWidgetVariableCompletionItem extends GTMCompletionItem{
+public class GTMWidgetVariableCompletionItem extends GTMVariableCompletionItem{
     private final String variableGlobalId;
     private final String currentWidgetGlobalId;
     private final Classifier typeVariable;
@@ -34,7 +35,7 @@ public class GTMWidgetVariableCompletionItem extends GTMCompletionItem{
 
     @Override
     public int getSortPriority() {
-        return 2;
+        return 4;
     }
 
     @Override
@@ -97,7 +98,7 @@ public class GTMWidgetVariableCompletionItem extends GTMCompletionItem{
 
     @Override
     protected void setCaretOffset(JTextComponent component) {
-        component.setCaretPosition(caretOffset - prefix.length() + getTextToInsert().length() + 1);
+
     }
 
     @Override
