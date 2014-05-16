@@ -14,7 +14,6 @@ import javax.swing.text.JTextComponent;
 import javax.swing.text.StyledDocument;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.OCLCompletionItemsProvider;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLCompletionItem;
-import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLErrorCompletionItem;
 import org.modelinglab.actiongui.netbeans.gtm.oclautocompletion.exceptions.GTMOCLAutocompletionException;
 import org.modelinglab.actiongui.netbeans.gtm.oclautocompletion.utils.GTMOCLAutocompletionUtils;
 import org.modelinglab.ocl.parser.OclParser;
@@ -28,6 +27,8 @@ import org.netbeans.spi.editor.completion.support.AsyncCompletionQuery;
 import org.netbeans.spi.editor.completion.support.AsyncCompletionTask;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataObject;
+import org.openide.windows.IOProvider;
+import org.openide.windows.InputOutput;
 import org.openide.windows.TopComponent;
 
 /**
@@ -36,6 +37,7 @@ import org.openide.windows.TopComponent;
  */
 @MimeRegistration(mimeType = "text/x-gtm", service = CompletionProvider.class)
 public class GTMOCLCompletionProvider implements CompletionProvider{
+    private final InputOutput io = IOProvider.getDefault().getIO("GTM auto-completion", false);
 
     @Override
     public CompletionTask createTask(int queryType, final JTextComponent jtc) {
@@ -57,7 +59,11 @@ public class GTMOCLCompletionProvider implements CompletionProvider{
                     //String errorMessage = "OCL auto-completion is disabled: " + ex.getMessage();
                     //OCLErrorCompletionItem item = new OCLErrorCompletionItem(null, caretOffset, errorMessage);
                     //completionResultSet.addItem(item);
-                    //completionResultSet.finish();
+                    
+                    //String errorMessage = "OCL auto-completion is disabled: " + ex.getMessage();
+                    //printError(errorMessage);
+                    
+                    completionResultSet.finish();
                     return;
                 }
                 // if position is not within square brakets --> finish
@@ -65,6 +71,9 @@ public class GTMOCLCompletionProvider implements CompletionProvider{
                     //String errorMessage = "OCL auto-completion is disabled: the caret position must be within square brackets '[' and ']'.";
                     //OCLErrorCompletionItem item = new OCLErrorCompletionItem(null, caretOffset, errorMessage);
                     //completionResultSet.addItem(item);
+                    
+                    //String errorMessage = "OCL auto-completion is disabled: the caret position must be within square brackets '[' and ']'";
+                    //printError(errorMessage);
                     completionResultSet.finish();
                     return;
                 }   
@@ -83,25 +92,37 @@ public class GTMOCLCompletionProvider implements CompletionProvider{
                 }
                 FileObject projectDirectory = p.getProjectDirectory();
                 if(projectDirectory == null){
+                    /*
                     String errorMessage = "Error getting the current project";
                     OCLErrorCompletionItem item = new OCLErrorCompletionItem(null, caretOffset, errorMessage);
                     completionResultSet.addItem(item);
+                    */
+                    String errorMessage = "Error getting the current project";
+                    printError(errorMessage);
                     completionResultSet.finish();
                     return;
                 }
                 FileObject parent = projectDirectory.getParent();
                 if(parent == null) {
+                    /*
                     String errorMessage = "Error getting the parent project of the current project";
                     OCLErrorCompletionItem item = new OCLErrorCompletionItem(null, caretOffset, errorMessage);
                     completionResultSet.addItem(item);
+                    */
+                    String errorMessage = "Error getting the parent project of the current project";
+                    printError(errorMessage);
                     completionResultSet.finish();
                     return;
                 }
                 FileObject datamodelFO = parent.getFileObject("dtm/target/classes/umlclasses.xml");
                 if(datamodelFO == null) {
+                    /*
                     String errorMessage = "Error getting the application data model";
                     OCLErrorCompletionItem item = new OCLErrorCompletionItem(null, caretOffset, errorMessage);
                     completionResultSet.addItem(item);
+                    */
+                    String errorMessage = "Error getting the application data model";
+                    printError(errorMessage);
                     completionResultSet.finish();
                     return;
                 }
@@ -119,8 +140,11 @@ public class GTMOCLCompletionProvider implements CompletionProvider{
                     parser = parserProvider.getParser(datamodelURI, guimodelURI, document, caretOffset);
                 } 
                 catch (GTMOCLAutocompletionException ex) {
+                    /*
                     OCLErrorCompletionItem item = new OCLErrorCompletionItem(null, caretOffset, ex.getMessage());
                     completionResultSet.addItem(item);
+                    */
+                    printError(ex.getMessage());
                     completionResultSet.finish();
                     return;
                 }
@@ -154,6 +178,12 @@ public class GTMOCLCompletionProvider implements CompletionProvider{
             return 0;
         }
         return 0;
+    }
+    
+    private void printError(String errorMessage) {
+        io.select();
+        io.getErr().println (errorMessage);  //this text should appear in red
+        io.getErr().close();
     }
 }
         

@@ -22,10 +22,9 @@ import org.modelinglab.actiongui.maven.tools.AGMavenInterfaceFactory;
 import org.modelinglab.actiongui.mm.gtm.Gtm;
 import org.modelinglab.actiongui.mm.gtm.StandardGtm;
 import org.modelinglab.actiongui.mm.gtm.node.Node;
-import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.GTMErrorCompletionItem;
+import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.statements.GTMStatementCompletionItem;
 import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.variables.GTMTemporalVariableCompletionItem;
 import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.variables.GTMWidgetVariableCompletionItem;
-import org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.statements.GTMStatementCompletionItem;
 import org.modelinglab.actiongui.netbeans.gtm.autocompletion.exceptions.GTMAutocompletionException;
 import org.modelinglab.actiongui.netbeans.gtm.autocompletion.utils.GTMAutocompletionUtils;
 import org.modelinglab.actiongui.tasks.gtmanalyzer.analysis.utils.UtilsGtmA;
@@ -50,6 +49,8 @@ import org.netbeans.spi.editor.completion.support.AsyncCompletionTask;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataObject;
 import org.openide.util.Utilities;
+import org.openide.windows.IOProvider;
+import org.openide.windows.InputOutput;
 import org.openide.windows.TopComponent;
 
 /**
@@ -58,7 +59,8 @@ import org.openide.windows.TopComponent;
  */
 @MimeRegistration(mimeType = "text/x-gtm", service = CompletionProvider.class)
 public class GTMCompletionProvider implements CompletionProvider{
-    GTMAutocompletionUtils utils = GTMAutocompletionUtils.getInstance();
+    private final GTMAutocompletionUtils utils = GTMAutocompletionUtils.getInstance();
+    private final InputOutput io = IOProvider.getDefault().getIO("GTM auto-completion", false);
 
     @Override
     public CompletionTask createTask(int queryType, final JTextComponent jtc) {
@@ -83,25 +85,37 @@ public class GTMCompletionProvider implements CompletionProvider{
                 }
                 FileObject projectDirectory = p.getProjectDirectory();
                 if(projectDirectory == null){
+                    /*
                     String errorMessage = "Error getting the current project";
                     GTMErrorCompletionItem item = new GTMErrorCompletionItem(null, caretOffset, errorMessage);
                     completionResultSet.addItem(item);
+                    */
+                    String errorMessage = "Error getting the current project";
+                    printError(errorMessage);
                     completionResultSet.finish();
                     return;
                 }
                 FileObject parent = projectDirectory.getParent();
                 if(parent == null) {
+                    /*
                     String errorMessage = "Error getting the parent project of the current project";
                     GTMErrorCompletionItem item = new GTMErrorCompletionItem(null, caretOffset, errorMessage);
                     completionResultSet.addItem(item);
+                    */
+                    String errorMessage = "Error getting the parent project of the current project";
+                    printError(errorMessage);
                     completionResultSet.finish();
                     return;
                 }
                 FileObject datamodelFO = parent.getFileObject("dtm/target/classes/umlclasses.xml");
                 if(datamodelFO == null) {
+                    /*
                     String errorMessage = "Error getting the application data model";
                     GTMErrorCompletionItem item = new GTMErrorCompletionItem(null, caretOffset, errorMessage);
                     completionResultSet.addItem(item);
+                    */
+                    String errorMessage = "Error getting the application data model";
+                    printError(errorMessage);
                     completionResultSet.finish();
                     return;
                 }
@@ -114,9 +128,13 @@ public class GTMCompletionProvider implements CompletionProvider{
                     namespace = agmi.unserializeNamespace(Utilities.toFile(datamodelURI));
                 } 
                 catch (AGMavenInterface.AGMavenInterfaceException ex) {
+                    /*
                     String errorMessage = "Error loading the application data model: " + ex.getMessage();
                     GTMErrorCompletionItem item = new GTMErrorCompletionItem(null, caretOffset, errorMessage);
                     completionResultSet.addItem(item);
+                    */
+                    String errorMessage = "Error loading the application data model: " + ex.getMessage();
+                    printError(errorMessage);
                     completionResultSet.finish();
                     return;
                 }
@@ -137,6 +155,8 @@ public class GTMCompletionProvider implements CompletionProvider{
                     GTMErrorCompletionItem item = new GTMErrorCompletionItem(null, caretOffset, errorMessage);
                     completionResultSet.addItem(item);
                     */
+                    String errorMessage = "Error building the GUIML model: " + ex.getMessage();
+                    printError(errorMessage);
                     completionResultSet.finish();
                     return;
                 }
@@ -152,9 +172,13 @@ public class GTMCompletionProvider implements CompletionProvider{
                                 completionResultSet.addAllItems(completionItems);
                             } 
                             catch (GTMAutocompletionException ex) {
+                                /*
                                 String errorMessage = "Error building the completion items for variables: " + ex.getMessage();
                                 GTMErrorCompletionItem item = new GTMErrorCompletionItem(null, caretOffset, errorMessage);
                                 completionResultSet.addItem(item);
+                                */
+                                String errorMessage = "Error building the completion items for variables: " + ex.getMessage();
+                                printError(errorMessage);
                             }
                             break;
                         }
@@ -164,9 +188,13 @@ public class GTMCompletionProvider implements CompletionProvider{
                                 completionResultSet.addAllItems(completionItems);
                             } 
                             catch (GTMAutocompletionException ex) {
+                                /*
                                 String errorMessage = "Error building the completion items for actions: " + ex.getMessage();
                                 GTMErrorCompletionItem item = new GTMErrorCompletionItem(null, caretOffset, errorMessage);
                                 completionResultSet.addItem(item);
+                                */
+                                String errorMessage = "Error building the completion items for actions: " + ex.getMessage();
+                                printError(errorMessage);
                             }
                             break;
                         }
@@ -340,6 +368,12 @@ public class GTMCompletionProvider implements CompletionProvider{
         accumulator.reverse();
         
         return utils.getAllStatements(accumulator.toString(), caretOffset);
+    }
+    
+    private void printError(String errorMessage) {
+        io.select();
+        io.getErr().println (errorMessage);  //this text should appear in red
+        io.getErr().close();
     }
 }
         

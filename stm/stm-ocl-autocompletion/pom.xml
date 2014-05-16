@@ -85,6 +85,12 @@
             <groupId>org.modelinglab.actiongui.netbeans.wrappers</groupId>
             <artifactId>ag-wrapper-module</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-io</artifactId>
+            <version>RELEASE74</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
     <build>
