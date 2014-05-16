@@ -57,6 +57,11 @@ public class GTMWidgetVariableCompletionItem extends GTMVariableCompletionItem{
         }
         // 2) If the variable belongs to a different widget --> write the minimum text to unambiguosly express the variable
         String[] split = variableGlobalId.split("\\.");
+        // 2.1) If the variable belongs to the window --> return the global id of the variable
+        if(split.length == 2) {
+            return variableGlobalId;
+        } 
+        // 2.2) If the variable does not belong to the window --> start from right to left looking for the minimum unambiguous relative path
         List<String> ids = Arrays.asList(split);
         String path = "";
         boolean found = false;

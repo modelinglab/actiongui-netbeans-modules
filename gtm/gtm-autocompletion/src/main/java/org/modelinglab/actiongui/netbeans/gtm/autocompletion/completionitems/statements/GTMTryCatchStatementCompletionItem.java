@@ -13,7 +13,7 @@ package org.modelinglab.actiongui.netbeans.gtm.autocompletion.completionitems.st
 public class GTMTryCatchStatementCompletionItem extends GTMStatementCompletionItem{
 
     public static final String NAME_STATEMENT = "try-catch";
-    public static final String TEXT_STATEMENT = "try {} catch(exception_type) {}";
+    public static final String TEXT_STATEMENT = "try {} catch(SecurityException) {} catch(ModelException) {} catch(Exception) {}";
     
     public GTMTryCatchStatementCompletionItem(String prefix, int caretOffset) {
         super(prefix, caretOffset, NAME_STATEMENT, TEXT_STATEMENT);

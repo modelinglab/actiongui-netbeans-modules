@@ -126,15 +126,17 @@ public class GTMCompletionProvider implements CompletionProvider{
                 FileObject fob = dob.getPrimaryFile();
                 URI guimodelURI = fob.toURI();
                 
-                // 4) Build the gtm model
+                // 4) Build the gtm model, hidding errors
                 StandardGtm standardGtm;
                 try {
                     standardGtm = buildGUIMLModel(guimodelURI, document, caretOffset, namespace);
                 } 
                 catch (GTMAutocompletionException ex) {
+                    /*
                     String errorMessage = "Error building the GUIML model: " + ex.getMessage();
                     GTMErrorCompletionItem item = new GTMErrorCompletionItem(null, caretOffset, errorMessage);
                     completionResultSet.addItem(item);
+                    */
                     completionResultSet.finish();
                     return;
                 }
