@@ -556,6 +556,14 @@ public class GTMOCLParserProvider {
 
         @Override
         public void inAGtmExp(AGtmExp node) {
+            // These cases are necessary to avoid problems with nodes created by the syntactic sugar module
+            if(node == null) {
+                return;
+            }
+            if(standardGtm.getSourceSection(node) == null) {
+                return;
+            }
+            
             SourceSection sourceSection = standardGtm.getSourceSection(node);
             int startPosition = sourceSection.getStartPosition().getOffset();
             int endPosition = sourceSection.getEndPosition().getOffset();
