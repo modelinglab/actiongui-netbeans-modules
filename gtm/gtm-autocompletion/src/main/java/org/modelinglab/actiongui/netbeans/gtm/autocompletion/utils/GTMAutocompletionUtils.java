@@ -75,8 +75,9 @@ public class GTMAutocompletionUtils {
     }
     
     /**
-     * Returns the text to parse from the document, adding a character in case the caret is between two dollar symbols
-     * (and nothing else), in order to avoid GUIML model parser exception
+     * Returns the text to parse from the document, adding a character in case the caret is within two dollar symbols
+     * (and nothing else), or within two square brackets (and nothing else), in order to avoid GUIML model parser
+     * exception while editing a GUIML expression.
      * @param document
      * @param caretOffset
      * @return 
@@ -85,21 +86,30 @@ public class GTMAutocompletionUtils {
         String textToParse = new String();
         String textBefore = document.getText(document.getStartPosition().getOffset(), caretOffset);
         boolean foundStartDollar = false;
+        boolean foundStartSquareBracket = false;
         if(!textBefore.isEmpty()) {
             if(textBefore.charAt(textBefore.length()-1) == '$') {
                 foundStartDollar = true;
             }
+            else if(textBefore.charAt(textBefore.length()-1) == '[') {
+                foundStartSquareBracket = true;
+            }
         }
         String textAfter = document.getText(caretOffset, document.getEndPosition().getOffset() - caretOffset);
         boolean foundEndDollar = false;
+        boolean foundEndSquareBracket = false;
         if(!textAfter.isEmpty()) {
             if(textAfter.charAt(0) == '$') {
               foundEndDollar = true;  
             }
+            else if(textAfter.charAt(0) == ']') {
+              foundEndSquareBracket = true;  
+            }
         }
         
+        
         textToParse += textBefore;
-        if(foundStartDollar && foundEndDollar) {
+        if((foundStartDollar && foundEndDollar) || (foundStartSquareBracket && foundEndSquareBracket)) {
             textToParse += "a";
         }
         textToParse += textAfter;

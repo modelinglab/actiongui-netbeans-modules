@@ -37,6 +37,7 @@ import org.modelinglab.mm.source.SourceTaskResult;
 import org.modelinglab.ocl.core.ast.Namespace;
 import org.modelinglab.ocl.core.ast.types.Classifier;
 import org.modelinglab.ocl.parser.OclParser;
+import org.netbeans.api.editor.completion.Completion;
 import org.netbeans.api.editor.mimelookup.MimeRegistration;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
@@ -374,6 +375,7 @@ public class GTMCompletionProvider implements CompletionProvider{
         io.select();
         io.getErr().println (errorMessage);  //this text should appear in red
         io.getErr().close();
+        Completion.get().hideAll();
     }
 }
         
