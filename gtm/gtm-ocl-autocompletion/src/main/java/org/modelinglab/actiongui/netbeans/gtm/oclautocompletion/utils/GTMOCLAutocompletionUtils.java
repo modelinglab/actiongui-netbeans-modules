@@ -31,31 +31,40 @@ public class GTMOCLAutocompletionUtils {
         // find '['
         String textBefore = document.getText(document.getStartPosition().getOffset(), caretOffset);
         int dollarCount = 0;
+        boolean found = false;
         for (int i = textBefore.length()-1; i >= 0; i--) {
             char charAt = textBefore.charAt(i);
             if(charAt == '$') {
                 dollarCount++;
             }
             if(charAt == '['){
+                found = true;
                 break;
             }
             if(charAt == ']') {
                 return 0;
             }
         }
-
+        if(!found) {
+            return 0;
+        }
+        
+        found = false;
         // find ']'
         String textAfter = document.getText(caretOffset, document.getEndPosition().getOffset() - caretOffset);
         for (int i = 0; i < textAfter.length(); i++) {
             char charAt = textAfter.charAt(i);
             if(charAt == ']'){
+                found = true;
                 break;
             }
             if(charAt == '['){
                 return 0;
             }
         }
-        
+        if(!found) {
+            return 0;
+        }
         if((dollarCount % 2) == 1) {
             return 1;
         }
