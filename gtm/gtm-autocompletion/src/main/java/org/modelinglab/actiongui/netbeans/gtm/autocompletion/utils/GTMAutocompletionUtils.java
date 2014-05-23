@@ -83,8 +83,27 @@ public class GTMAutocompletionUtils {
      * @return 
      */
     public String textToParse(Document document, int caretOffset) throws BadLocationException {
-        String textToParse = new String();
+        String textToParse;
         String textBefore = document.getText(document.getStartPosition().getOffset(), caretOffset);
+        String textAfter = document.getText(caretOffset, document.getEndPosition().getOffset() - caretOffset);
+        
+        textToParse = fixEmptyGtmExpressionErrors(textBefore, textAfter);
+        if(textToParse == null) {
+            textToParse = fixIncompleteActionErrors(textBefore, textAfter);
+        }
+        if(textToParse == null) {
+            textToParse = textBefore + textAfter;
+        }
+        return textToParse;
+    }
+
+    private String fixEmptyGtmExpressionErrors(String textBefore, String textAfter) {
+        if(!isWithinGtmExpression(textBefore, textAfter)) {
+            return null;
+        }
+        
+        String fixedText = new String();
+        
         boolean foundStartDollar = false;
         boolean foundStartSquareBracket = false;
         if(!textBefore.isEmpty()) {
@@ -95,7 +114,7 @@ public class GTMAutocompletionUtils {
                 foundStartSquareBracket = true;
             }
         }
-        String textAfter = document.getText(caretOffset, document.getEndPosition().getOffset() - caretOffset);
+
         boolean foundEndDollar = false;
         boolean foundEndSquareBracket = false;
         if(!textAfter.isEmpty()) {
@@ -106,16 +125,163 @@ public class GTMAutocompletionUtils {
               foundEndSquareBracket = true;  
             }
         }
-        
-        
-        textToParse += textBefore;
-        if((foundStartDollar && foundEndDollar) || (foundStartSquareBracket && foundEndSquareBracket)) {
-            textToParse += "a";
-        }
-        textToParse += textAfter;
-        return textToParse;
-    }
 
+        fixedText += textBefore;
+        // if we are in the case the caret is within two dollar symbols (and nothing else),
+        // or within two square brackets (and nothing else) --> add any character to avoid parser errors
+        if((foundStartDollar && foundEndDollar) || (foundStartSquareBracket && foundEndSquareBracket)) {  
+            fixedText += "a";   
+        }
+        fixedText += textAfter;
+        
+        return fixedText;
+    }
+    
+    private String fixIncompleteActionErrors(String textBefore, String textAfter) {
+        if(isWithinGtmExpression(textBefore, textAfter)) {
+            return null;
+        }
+        if(!isWithinBrackets(textBefore, textAfter)) {
+            return null;
+        }
+        
+        StringBuilder fixedText = new StringBuilder();
+        boolean foundDelimitter = false;
+        int numOfRightBrackets = 0;
+        for(int i = textBefore.length()-1; i >= 0; i--) {
+            char charAt = textBefore.charAt(i);
+            if(foundDelimitter) {
+                fixedText.append(charAt);
+            }
+            else {
+                if(charAt == '}') {
+                    numOfRightBrackets++;
+                    fixedText.append(' ');
+                }
+                else if(charAt == '{') {
+                    numOfRightBrackets--;                   
+                    if(numOfRightBrackets < 0) {
+                        foundDelimitter = true;
+                        fixedText.append(charAt);
+                    }
+                    else {
+                        fixedText.append(' ');
+                    }
+                }
+                else {
+                    if(Character.isWhitespace(charAt)) {
+                        fixedText.append(charAt);
+                    }
+                    else {
+                        fixedText.append(' ');
+                    }
+                }
+            }
+        }
+        fixedText.reverse();
+      
+        foundDelimitter = false;
+        int numOfLeftBrackets = 0;
+        for(int i = 0; i < textAfter.length(); i++) {
+            char charAt = textAfter.charAt(i);
+            if(foundDelimitter) {
+                fixedText.append(charAt);
+            }
+            else {
+                if(charAt == '{') {
+                    numOfLeftBrackets++;
+                    fixedText.append(' ');
+                }
+                else if(charAt == '}') {
+                    numOfLeftBrackets--;
+                    if(numOfLeftBrackets < 0) {
+                        foundDelimitter = true;
+                        fixedText.append(charAt);
+                    }
+                    else {
+                        fixedText.append(' ');
+                    }
+                }
+                else {
+                    if(Character.isWhitespace(charAt)) {
+                        fixedText.append(charAt);
+                    }
+                    else {
+                        fixedText.append(' ');
+                    }
+                }
+            }
+        }
+        
+        return fixedText.toString();
+    }
+    
+    private boolean isWithinGtmExpression (String textBefore, String textAfter) {
+        boolean foundStartGtmExpression = false;
+        boolean foundEndGtmExpression = false;
+        for(int i = textBefore.length()-1; i >= 0; i--) {
+            if(textBefore.charAt(i) == ']') {
+                return false;
+            }
+            if(textBefore.charAt(i) == '[') {
+                foundStartGtmExpression = true;
+                break;
+            }
+        }
+        if(!foundStartGtmExpression) {
+            return false;
+        }
+        
+        for(int i = 0; i < textAfter.length(); i++) {
+            if(textAfter.charAt(i) == '[') {
+                return false;
+            }
+            if(textAfter.charAt(i) == ']') {
+                foundEndGtmExpression = true;
+                break;
+            }
+        }
+        
+        return foundStartGtmExpression && foundEndGtmExpression;   
+    }
+    
+    private boolean isWithinBrackets (String textBefore, String textAfter) {
+        boolean foundLeftBracket = false;
+        boolean foundRightBracket = false;
+        int numOfRightBrackets = 0;
+        for(int i = textBefore.length()-1; i >= 0; i--) {
+            if(textBefore.charAt(i) == '}') {
+                numOfRightBrackets++;
+            }
+            if(textBefore.charAt(i) == '{') {
+                numOfRightBrackets--;
+                if(numOfRightBrackets < 0) {
+                    foundLeftBracket = true;
+                    break;
+                }
+            }
+        }
+        if(!foundLeftBracket) {
+            return false;
+        }
+        
+        int numOfLeftBrackets = 0;
+        for(int i = 0; i < textAfter.length(); i++) {
+            if(textAfter.charAt(i) == '{') {
+                numOfLeftBrackets++;
+            }
+            if(textAfter.charAt(i) == '}') {
+                numOfLeftBrackets--;
+                if(numOfLeftBrackets < 0) {
+                    foundRightBracket = true;
+                    break;
+                }
+            }
+        }
+        
+        return foundLeftBracket && foundRightBracket;   
+    }
+    
     public Collection<CompletionItem> getAllStatements(String prefix, int caretOffset) {
         Collection<CompletionItem> statements = new ArrayList<>();
         // add statements
