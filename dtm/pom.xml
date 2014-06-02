@@ -17,5 +17,6 @@
         <module>dtm-file</module>
         <module>dtm-language</module>
         <module>dtm-braces-matcher</module>
+        <module>dtm-invariants-ocl-autocompletion</module>
     </modules>
 </project>
