@@ -82,7 +82,7 @@
             <dependency>
                 <groupId>org.modelinglab.actiongui.netbeans.wrappers</groupId>
                 <artifactId>ag-wrapper-module</artifactId>
-                <version>0.1.2</version>
+                <version>${project.version}</version>
             </dependency>
             
             <dependency>
