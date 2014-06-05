@@ -3,14 +3,16 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.modelinglab.actiongui.netbeans.gtm</groupId>
-        <artifactId>gtm</artifactId>
-        <version>0.2.2-SNAPSHOT</version>
+        <artifactId>dtm</artifactId>
+        <groupId>org.modelinglab.actiongui.netbeans.dtm</groupId>
+        <version>0.2-SNAPSHOT</version>
     </parent>
-    <artifactId>gtm-braces-matcher</artifactId>
+
+    <artifactId>dtm-braces-matcher</artifactId>
+    
     <packaging>nbm</packaging>
 
-    <name>ActionGUI GTM Braces Matcher</name>
+    <name>ActionGUI DTM Braces Matcher</name>
     
     <dependencies>
         <dependency>
@@ -21,4 +23,3 @@
     </dependencies>
 
 </project>
-

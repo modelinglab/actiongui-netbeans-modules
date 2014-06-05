@@ -4,12 +4,12 @@
     <parent>
         <groupId>org.modelinglab.actiongui.netbeans.gtm</groupId>
         <artifactId>gtm</artifactId>
-        <version>0.2.2-SNAPSHOT</version>
+        <version>0.2-SNAPSHOT</version>
     </parent>
-    <artifactId>gtm-ocl-autocompletion</artifactId>
+    <artifactId>gtm-autocompletion</artifactId>
     <packaging>nbm</packaging>
-    <name>ActionGUI GTM OCL Autocompletion</name>
-    
+    <name>ActionGUI GTM Autocompletion</name>
+    <description>This module implements the auto-completion feature for GUIML language</description>
     <build>
         <plugins>
             <plugin>
@@ -38,21 +38,42 @@
             </plugin>
         </plugins>
     </build>
-    
     <dependencies>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-annotations-common</artifactId>
+        </dependency>       
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-editor-mimelookup</artifactId>
+            <version>RELEASE74</version>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-editor-completion</artifactId>
             <version>RELEASE74</version>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-modules-editor-mimelookup</artifactId>
-            <version>RELEASE74</version>
+            <artifactId>org-openide-loaders</artifactId>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-windows</artifactId>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-filesystems</artifactId>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.modelinglab.actiongui.maven</groupId>
+            <artifactId>plugin-tools</artifactId>
+            <version>2.5-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -68,39 +89,7 @@
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-windows</artifactId>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-lookup</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-loaders</artifactId>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-filesystems</artifactId>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.modelinglab.actiongui.netbeans.autocompletion</groupId>
-            <artifactId>actiongui-ocl-autocompletion</artifactId>
-            <version>0.2-SNAPSHOT</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.modelinglab.actiongui.maven</groupId>
-            <artifactId>plugin-tools</artifactId>
-            <version>2.5-SNAPSHOT</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.modelinglab.actiongui.netbeans.wrappers</groupId>
@@ -113,7 +102,6 @@
             <type>jar</type>
         </dependency>
     </dependencies>
-    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

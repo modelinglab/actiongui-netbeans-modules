@@ -4,19 +4,17 @@
     <parent>
         <artifactId>ag-netbeans-modules</artifactId>
         <groupId>org.modelinglab.actiongui.netbeans</groupId>
-        <version>0.2.2-SNAPSHOT</version>
+        <version>0.2-SNAPSHOT</version>
     </parent>
-    <groupId>org.modelinglab.actiongui.netbeans.dtm</groupId>
-    <artifactId>dtm</artifactId>
+    <groupId>org.modelinglab.actiongui.netbeans.stm</groupId>
+    <artifactId>stm</artifactId>
 
     <packaging>pom</packaging>
-
-    <name>ActionGUI DTM Modules</name>
-
+    <name>ActionGUI STM Modules</name>
     <modules>
-        <module>dtm-file</module>
-        <module>dtm-language</module>
-        <module>dtm-braces-matcher</module>
-        <module>dtm-invariants-ocl-autocompletion</module>
-    </modules>
+        <module>stm-file</module>
+        <module>stm-language</module>
+        <module>stm-braces-matcher</module>
+    <module>stm-ocl-autocompletion</module>
+  </modules>
 </project>

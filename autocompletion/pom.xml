@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.modelinglab.actiongui.netbeans</groupId>
         <artifactId>ag-netbeans-modules</artifactId>
-        <version>0.2-SNAPSHOT</version>
+        <version>0.2.2-SNAPSHOT</version>
     </parent>
     <groupId>org.modelinglab.actiongui.netbeans.autocompletion</groupId>
     <artifactId>autocompletion</artifactId>

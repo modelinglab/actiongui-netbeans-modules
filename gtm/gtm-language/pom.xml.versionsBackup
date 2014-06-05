@@ -3,16 +3,26 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.modelinglab.actiongui.netbeans.dtm</groupId>
-        <artifactId>dtm</artifactId>
-        <version>0.2.2-SNAPSHOT</version>
+        <groupId>org.modelinglab.actiongui.netbeans.gtm</groupId>
+        <artifactId>gtm</artifactId>
+        <version>0.2-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dtm-file</artifactId>
-    <packaging>nbm</packaging>
+    <artifactId>gtm-language</artifactId>
 
-    <name>ActionGUI DTM File Support</name>
+    <name>ActionGUI GTM Language</name>
+    <packaging>nbm</packaging>
+    
     <dependencies>
+        <dependency>
+            <groupId>org.modelinglab.actiongui.netbeans.wrappers</groupId>
+            <artifactId>ag-wrapper-module</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-annotations-common</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-filesystems</artifactId>
@@ -53,5 +63,27 @@
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-dialogs</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-lexer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-csl-api</artifactId>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <!-- XXX: gortiz: added by hand. Needed to compile GtmLanguage with @LanguageRegistration -->
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-editor-codetemplates</artifactId>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <!-- XXX: gortiz: added by hand. Needed to compile GtmLanguage with @LanguageRegistration -->
+            <groupId>org.netbeans.modules</groupId>
+            <artifactId>org-netbeans-modules-editor-errorstripe</artifactId>            
+            <type>jar</type>
+        </dependency>
     </dependencies>
+
 </project>

@@ -2,14 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.modelinglab.actiongui.netbeans.gtm</groupId>
-        <artifactId>gtm</artifactId>
-        <version>0.2.2-SNAPSHOT</version>
+        <groupId>org.modelinglab.actiongui.netbeans.autocompletion</groupId>
+        <artifactId>autocompletion</artifactId>
+        <version>0.2-SNAPSHOT</version>
     </parent>
-    <artifactId>gtm-autocompletion</artifactId>
+    <artifactId>actiongui-ocl-autocompletion</artifactId>
     <packaging>nbm</packaging>
-    <name>ActionGUI GTM Autocompletion</name>
-    <description>This module implements the auto-completion feature for GUIML language</description>
+    <name>ActionGUI OCL Autocompletion</name>
+    
     <build>
         <plugins>
             <plugin>
@@ -17,12 +17,17 @@
                 <artifactId>nbm-maven-plugin</artifactId>
                 <version>3.13</version>
                 <extensions>true</extensions>
+                <configuration>
+                    <publicPackages>
+                        <publicPackage>org.modelinglab.actiongui.netbeans.autocompletion.ocl.*</publicPackage>
+                    </publicPackages>
+                </configuration>
             </plugin>
+            <!-- NetBeans 6.9+ requires JDK 6, starting NetBeans 7.4 source 1.7 will be required   -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.5.1</version>
-                <!-- NetBeans 6.9+ requires JDK 6, starting NetBeans 7.4 source 1.7 will be required   -->
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
@@ -42,12 +47,6 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-annotations-common</artifactId>
-        </dependency>       
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-modules-editor-mimelookup</artifactId>
-            <version>RELEASE74</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -57,49 +56,12 @@
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-loaders</artifactId>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-windows</artifactId>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-filesystems</artifactId>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.modelinglab.actiongui.maven</groupId>
-            <artifactId>plugin-tools</artifactId>
-            <version>2.5-SNAPSHOT</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-modules-projectapi</artifactId>
-            <version>RELEASE74</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-util-lookup</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.modelinglab.actiongui.netbeans.wrappers</groupId>
             <artifactId>ag-wrapper-module</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-io</artifactId>
-            <version>RELEASE74</version>
-            <type>jar</type>
         </dependency>
     </dependencies>
     <properties>

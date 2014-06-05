@@ -2,21 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>ag-netbeans-modules</artifactId>
         <groupId>org.modelinglab.actiongui.netbeans</groupId>
-        <version>0.2.2-SNAPSHOT</version>
+        <artifactId>ag-netbeans-modules</artifactId>
+        <version>0.2-SNAPSHOT</version>
     </parent>
-    <groupId>org.modelinglab.actiongui.netbeans.dtm</groupId>
-    <artifactId>dtm</artifactId>
-
+    <groupId>org.modelinglab.actiongui.netbeans.autocompletion</groupId>
+    <artifactId>autocompletion</artifactId>
     <packaging>pom</packaging>
-
-    <name>ActionGUI DTM Modules</name>
-
+    <name>ActionGUI Autocompletion Modules</name>
     <modules>
-        <module>dtm-file</module>
-        <module>dtm-language</module>
-        <module>dtm-braces-matcher</module>
-        <module>dtm-invariants-ocl-autocompletion</module>
+        <module>actiongui-ocl-autocompletion</module>
     </modules>
 </project>
