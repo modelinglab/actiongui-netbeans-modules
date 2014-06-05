@@ -108,10 +108,35 @@ public class DTMInvariantsOCLCompletionProvider implements CompletionProvider{
 
             @Override
             protected void query(CompletionResultSet completionResultSet, Document document, int caretOffset) {                 
-                // 1) Get the data model URI
+                // 1) Get the (possibly) XML Invariants file
+                DataObject dob = TopComponent.getRegistry().getActivated().getLookup().lookup(DataObject.class);
+                FileObject fob = dob.getPrimaryFile();
+                URI dtmInvariantsModelURI = fob.toURI();
+                
+                // 2) Build the XML Invariants model
+                Itm itm;
+                try {
+                    itm = buildDTMInvariantsModel(dtmInvariantsModelURI, document);
+                } 
+                catch (DTMInvariantsOCLAutocompletionException ex) {
+                    // If the XML file is not an XML invariant file or contains errors --> hide errors
+                    //String errorMessage = "Error building the invariants model: " + ex.getMessage();
+                    //printError(errorMessage);
+                    completionResultSet.finish();
+                    return;
+                }
+                
+                // 3) In case the caret is within the expression of an invariant, get the invariant
+                InvariantType invariantType = getInvariant(itm, caretOffset);
+                if(invariantType == null) {
+                    completionResultSet.finish();
+                    return;
+                }
+                
+                // 4) Get the data model URI
                 Project p = TopComponent.getRegistry().getActivated().getLookup().lookup(Project.class);
                 if (p == null) {
-                    DataObject dob = TopComponent.getRegistry().getActivated().getLookup().lookup(DataObject.class);
+                    dob = TopComponent.getRegistry().getActivated().getLookup().lookup(DataObject.class);
                     if (dob != null) {
                         FileObject fo = dob.getPrimaryFile();
                         p = FileOwnerQuery.getOwner(fo);
@@ -144,46 +169,9 @@ public class DTMInvariantsOCLCompletionProvider implements CompletionProvider{
                     return;
                 }
                 URI datamodelURI = datamodelFO.toURI();
-                
-                // 2) Load the data model
-                AGMavenInterface agmi = AGMavenInterfaceFactory.getDefaultInterface();  
-                Namespace namespace;
-                try {
-                    namespace = agmi.unserializeNamespace(Utilities.toFile(datamodelURI));
-                } 
-                catch (AGMavenInterface.AGMavenInterfaceException ex) {
-                    String errorMessage = "Error loading the application data model: " + ex.getMessage();
-                    printError(errorMessage);
-                    completionResultSet.finish();
-                    return;
-                }
 
-                // 3) Get the XML Invariants file
-                DataObject dob = TopComponent.getRegistry().getActivated().getLookup().lookup(DataObject.class);
-                FileObject fob = dob.getPrimaryFile();
-                URI dtmInvariantsModelURI = fob.toURI();
-                
-                // 4) Build the XML Invariants model
-                Itm itm;
-                try {
-                    itm = buildDTMInvariantsModel(dtmInvariantsModelURI, document, caretOffset, namespace);
-                } 
-                catch (DTMInvariantsOCLAutocompletionException ex) {
-                    String errorMessage = "Error building the invariants model: " + ex.getMessage();
-                    printError(errorMessage);
-                    completionResultSet.finish();
-                    return;
-                }
-                
-                // 5) In case the caret is within the expression of an invariant, get the invariant
-                InvariantType invariantType = getInvariant(itm, caretOffset);
-                if(invariantType == null) {
-                    completionResultSet.finish();
-                    return;
-                }
-                
-                // 6) Build OCL parser
-                OclParser parser = null;
+                // 5) Build OCL parser
+                OclParser parser;
                 try {
                     parser = getParser(datamodelURI, document, itm, invariantType, caretOffset);
                 } 
@@ -194,8 +182,7 @@ public class DTMInvariantsOCLCompletionProvider implements CompletionProvider{
                     return;
                 }
                 
-                
-                // 7) Build completion items
+                // 6) Build completion items
                 Collection<CompletionItem> completionItems;
                 try {
                     completionItems = buildCompletionItems(parser, itm, invariantType, document, caretOffset);
@@ -205,6 +192,7 @@ public class DTMInvariantsOCLCompletionProvider implements CompletionProvider{
                     printError(ex.getMessage());
                 }
                 
+                // 7) Finish the completion item list
                 completionResultSet.finish();
             }      
         }, jtc);
@@ -230,7 +218,7 @@ public class DTMInvariantsOCLCompletionProvider implements CompletionProvider{
         return 0;
     }
     
-    private Itm buildDTMInvariantsModel(URI dtmInvariantsModelURI, Document document, int caretOffset, Namespace namespace) throws DTMInvariantsOCLAutocompletionException {
+    private Itm buildDTMInvariantsModel(URI dtmInvariantsModelURI, Document document) throws DTMInvariantsOCLAutocompletionException {
 
         // 1) Get the text to parse
         String textToParse;       
@@ -276,7 +264,7 @@ public class DTMInvariantsOCLCompletionProvider implements CompletionProvider{
             SourceSection sourceSection = expressionPositions.get(invariantType);
             int start = sourceSection.getStartPosition().getOffset();
             int end = sourceSection.getEndPosition().getOffset();
-            if(start <= caretOffset && end >= end) {
+            if(start <= caretOffset && end >= caretOffset) {
                 return invariantType;
             }
             
