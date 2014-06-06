@@ -27,7 +27,6 @@ import org.modelinglab.actiongui.maven.tools.AGMavenInterfaceFactory;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.OCLCompletionItemsProvider;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLCompletionItem;
 import org.modelinglab.actiongui.netbeans.dtm.invariants.oclautocompletion.exception.DTMInvariantsOCLAutocompletionException;
-import org.modelinglab.actiongui.netbeans.dtm.invariants.oclautocompletion.utils.DTMInvariantsOCLAutocompletionUtils;
 import org.modelinglab.actiongui.tasks.dtminvariants.parser.ContextType;
 import org.modelinglab.actiongui.tasks.dtminvariants.parser.InvariantType;
 import org.modelinglab.actiongui.tasks.dtminvariants.parser.ItmParser;
@@ -94,10 +93,9 @@ import org.openide.windows.TopComponent;
  */
 @MimeRegistration(mimeType = "text/xml", service = CompletionProvider.class)
 public class DTMInvariantsOCLCompletionProvider implements CompletionProvider{
-    private final DTMInvariantsOCLAutocompletionUtils utils = DTMInvariantsOCLAutocompletionUtils.getInstance();
     private final InputOutput io = IOProvider.getDefault().getIO("DTM Invariants OCL auto-completion", false);
     private final String CONTEXT_VAR = "self";
-    private final OCLCompletionItemsProvider itemsProvider = new OCLCompletionItemsProvider();
+    private final OCLCompletionItemsProvider itemsProvider = new OCLCompletionItemsProvider(true);
 
     @Override
     public CompletionTask createTask(int queryType, final JTextComponent jtc) {
@@ -377,6 +375,9 @@ public class DTMInvariantsOCLCompletionProvider implements CompletionProvider{
             throw new DTMInvariantsOCLAutocompletionException("Error getting the text before the cursor: " + ex.getMessage());
         }
  
+        // 2) Replace characters '<' and '>' in the accumulator
+        accumulator = replaceSpecialChars(accumulator);
+        
         // 2) Build items
         Collection<OCLCompletionItem> buildOCLCompletionItems = itemsProvider.buildOCLCompletionItems(accumulator, parser, caretOffset);
         items.addAll(buildOCLCompletionItems);
@@ -614,6 +615,13 @@ public class DTMInvariantsOCLCompletionProvider implements CompletionProvider{
             }
         }
         return walker.getResult(node);
+    }
+
+    private StringBuilder replaceSpecialChars(StringBuilder input) {
+        String toString = input.toString();
+        toString = toString.replace("&lt;", "<");
+        toString = toString.replace("&gt;", ">");
+        return new StringBuilder(toString);
     }
     
     private class PartialOCLWalker extends OclWalker {

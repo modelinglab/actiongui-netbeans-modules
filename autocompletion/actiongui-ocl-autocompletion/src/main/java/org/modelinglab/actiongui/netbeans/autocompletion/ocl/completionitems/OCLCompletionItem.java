@@ -107,20 +107,9 @@ public abstract class OCLCompletionItem implements CompletionItem{
 
     protected abstract Color getColor();
     
-    private String adaptTextToHtml(String text) {
-        StringBuilder adaptedText = new StringBuilder("");
-        for(int i = 0; i < text.length(); i++) {
-            char charAt = text.charAt(i);
-            if(charAt == '<') {
-                adaptedText.append("&lt;");
-            }
-            else if (charAt == '>') {
-                adaptedText.append("&gt;");
-            }
-            else{
-                adaptedText.append(charAt);
-            }
-        }
-        return adaptedText.toString();
+    protected String adaptTextToHtml(String text) {
+        String adaptedText = text.replace("<", "&lt;");
+        adaptedText = adaptedText.replace(">", "&gt;");
+        return adaptedText;
     }
 }

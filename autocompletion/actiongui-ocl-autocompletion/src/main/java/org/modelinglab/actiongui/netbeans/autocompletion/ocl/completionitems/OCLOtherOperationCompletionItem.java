@@ -16,20 +16,26 @@ import org.modelinglab.ocl.core.ast.Parameter;
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
 public class OCLOtherOperationCompletionItem extends OCLOperationCompletionItem{
-
-    public OCLOtherOperationCompletionItem(Operation op, String prefix, int caretOffset) {
+    private final boolean fromXML;
+    
+    public OCLOtherOperationCompletionItem(Operation op, String prefix, int caretOffset, boolean fromXML) {
         super(op, prefix, caretOffset);
         assert op.getOwnedParameters().size() == 1;
+        this.fromXML = fromXML;
     }
 
     @Override
     protected void setCaretOffset(JTextComponent component) {
-        component.setCaretPosition(caretOffset - prefix.length() + op.getName().length() + 1);
+        component.setCaretPosition(caretOffset - prefix.length() + getTextToInsert().length());
     }
 
     @Override
     protected String getTextToInsert() {
-        return op.getName() + " ";
+        String textToInsert = op.getName() + " ";
+        if(fromXML) {
+            textToInsert = adaptTextToHtml(textToInsert);
+        }
+        return textToInsert;
     }
 
     @Override

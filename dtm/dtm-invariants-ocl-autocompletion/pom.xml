@@ -90,7 +90,7 @@
         <dependency>
             <groupId>org.modelinglab.actiongui.netbeans.autocompletion</groupId>
             <artifactId>actiongui-ocl-autocompletion</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>${project.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>

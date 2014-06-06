@@ -54,7 +54,16 @@ import org.modelinglab.ocl.parser.OclParserException;
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
 public class OCLCompletionItemsProvider {
+    boolean forXML;
+    
+    public OCLCompletionItemsProvider() {
+        this.forXML = false;
+    }
 
+    public OCLCompletionItemsProvider(boolean forXML) {
+        this.forXML = forXML;
+    }
+    
     public Collection<OCLCompletionItem> buildOCLCompletionItems(StringBuilder expr, OclParser parser, int caretOffset) {
         Collection<OCLCompletionItem> completionItems;
          
@@ -434,7 +443,7 @@ public class OCLCompletionItemsProvider {
             if(!name.startsWith(accumulator)) {
                 continue;
             }
-            OCLOtherOperationCompletionItem item = new OCLOtherOperationCompletionItem(op, accumulator, caretOffset);
+            OCLOtherOperationCompletionItem item = new OCLOtherOperationCompletionItem(op, accumulator, caretOffset, forXML);
             completionItems.add(item);
         }
         
