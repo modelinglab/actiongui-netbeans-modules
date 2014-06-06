@@ -4,7 +4,7 @@
     <parent>
         <artifactId>stm</artifactId>
         <groupId>org.modelinglab.actiongui.netbeans.stm</groupId>
-        <version>0.2.2-SNAPSHOT</version>
+        <version>0.2.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>stm-file</artifactId>
