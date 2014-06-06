@@ -406,6 +406,7 @@ public class DTMInvariantsOCLCompletionProvider implements CompletionProvider{
         if(expr.isEmpty()) {
             return;
         }
+        expr = replaceSpecialChars(expr);
         
         // 2) Parse (at grammar level) the expression
         PushbackReader reader = new PushbackReader(new StringReader(expr), expr.length());
@@ -622,6 +623,12 @@ public class DTMInvariantsOCLCompletionProvider implements CompletionProvider{
         toString = toString.replace("&lt;", "<");
         toString = toString.replace("&gt;", ">");
         return new StringBuilder(toString);
+    }
+    
+    private String replaceSpecialChars(String input) {
+        String output = input.replace("&lt;", "<");
+        output = output.replace("&gt;", ">");
+        return output;
     }
     
     private class PartialOCLWalker extends OclWalker {
