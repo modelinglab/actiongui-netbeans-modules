@@ -19,15 +19,10 @@ public abstract class OCLOperationCompletionItem extends OCLCompletionItem{
     protected Operation op;
 
     protected OCLOperationCompletionItem(Operation op, String prefix, int caretOffset) {
-        super(prefix, caretOffset);
+        super(prefix, caretOffset, 1);
         assert op.getName().startsWith(prefix);
         this.op = op;
     }        
-    
-    @Override
-    public int getSortPriority() {
-        return 1;
-    }
 
     @Override
     public CharSequence getSortText() {

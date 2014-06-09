@@ -22,16 +22,11 @@ public class OCLPropertyCompletionItem extends OCLCompletionItem{
     private final boolean fromImplicitCollect;
 
     public OCLPropertyCompletionItem(Property property, boolean fromImplicitCollect, String prefix, int caretOffset) {
-        super(prefix, caretOffset);
+        super(prefix, caretOffset, 0);
         assert property.getName().startsWith(prefix);
         this.property = property;
         this.fromImplicitCollect = fromImplicitCollect;
     }            
-
-    @Override
-    public int getSortPriority() {
-        return 0;
-    }
 
     @Override
     public CharSequence getSortText() {

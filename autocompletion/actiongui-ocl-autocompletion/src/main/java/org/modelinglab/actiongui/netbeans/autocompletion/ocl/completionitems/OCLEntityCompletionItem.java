@@ -19,12 +19,8 @@ public class OCLEntityCompletionItem extends OCLUmlClassCompletionItem{
     public OCLEntityCompletionItem(UmlClass entity, String prefix, int caretOffset) {
         super(entity, prefix, caretOffset);
         assert OCLAutocompletionUtils.isEntity(entity);
+        this.priority = 3;
     }        
-
-    @Override
-    public int getSortPriority() {
-        return 3;
-    }
 
     @Override
     protected Color getColor() {

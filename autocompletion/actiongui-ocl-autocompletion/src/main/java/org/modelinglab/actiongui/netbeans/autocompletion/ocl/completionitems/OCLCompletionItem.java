@@ -29,10 +29,12 @@ public abstract class OCLCompletionItem implements CompletionItem{
     protected final String prefix;
     protected final int caretOffset;
     protected final ImageIcon fieldIcon;
+    protected int priority;
     
-    public OCLCompletionItem(String prefix, int caretOffset) {
+    public OCLCompletionItem(String prefix, int caretOffset, int priority) {
         this.prefix = prefix;
         this.caretOffset = caretOffset;
+        this.priority = priority;
         this.fieldIcon = new ImageIcon(ImageUtilities.loadImage("org/modelinglab/actiongui/netbeans/autocompletion/ocl/ocl.png"));
     }
     
@@ -89,7 +91,13 @@ public abstract class OCLCompletionItem implements CompletionItem{
     }
 
     @Override
-    public abstract int getSortPriority();
+    public int getSortPriority() {
+        return priority;
+    }
+    
+    public void setSortPriority(int priority) {
+        this.priority = priority;
+    }
     
     @Override
     public abstract CharSequence getSortText();

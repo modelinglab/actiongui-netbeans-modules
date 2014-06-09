@@ -19,20 +19,13 @@ public class OCLErrorCompletionItem extends OCLCompletionItem{
     private final String errorMessage;
     
     public OCLErrorCompletionItem(String prefix, int caretOffset, String errorMessage) {
-        super(prefix, caretOffset);
+        super(prefix, caretOffset, 0);
         this.errorMessage = errorMessage;
     }
 
     @Override
     public void defaultAction(JTextComponent component) {
         Completion.get().hideAll();
-    }
-
-    
-    
-    @Override
-    public int getSortPriority() {
-        return 0;
     }
 
     @Override

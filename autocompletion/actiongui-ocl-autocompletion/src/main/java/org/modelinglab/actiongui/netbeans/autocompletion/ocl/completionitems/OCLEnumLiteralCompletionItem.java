@@ -19,15 +19,10 @@ public class OCLEnumLiteralCompletionItem extends OCLCompletionItem{
     private final UmlEnumLiteral literal;
 
     public OCLEnumLiteralCompletionItem(UmlEnumLiteral literal, String prefix, int caretOffset) {
-        super(prefix, caretOffset);
+        super(prefix, caretOffset, 5);
         assert literal.toString().startsWith(prefix);
         this.literal = literal;
     }        
-
-    @Override
-    public int getSortPriority() {
-        return 5;
-    }
 
     @Override
     public CharSequence getSortText() {

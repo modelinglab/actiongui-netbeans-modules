@@ -8,45 +8,45 @@ package org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems;
 
 import java.awt.Color;
 import javax.swing.text.JTextComponent;
-import org.modelinglab.ocl.core.values.InvalidValue;
+import org.modelinglab.ocl.core.values.BooleanValue;
 
 /**
  *
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
-public class OCLInvalidCompletionItem extends OCLCompletionItem{
+public class OCLFalseCompletionItem extends OCLCompletionItem{
     
-    private final InvalidValue invalidValue;
+    private final BooleanValue trueValue;
     
-    public OCLInvalidCompletionItem(String prefix, int caretOffset) {
+    public OCLFalseCompletionItem(String prefix, int caretOffset) {
         super(prefix, caretOffset, 0); 
-        this.invalidValue = InvalidValue.instantiate();
-        assert invalidValue.toString().startsWith(prefix);
+        this.trueValue = BooleanValue.FALSE;
+        assert trueValue.toString().startsWith(prefix);
     }
 
     @Override
     public CharSequence getSortText() {
-        return invalidValue.toString();
+        return trueValue.toString();
     }
 
     @Override
     public CharSequence getInsertPrefix() {
-        return invalidValue.toString();
+        return trueValue.toString();
     }
 
     @Override
     protected String getTextToInsert() {
-        return invalidValue.toString();
+        return trueValue.toString();
     }
         
     @Override
     protected String getLeftText() {
-        return invalidValue.toString();
+        return trueValue.toString();
     }
 
     @Override
     protected String getRightText() {
-        return invalidValue.getType().toString();
+        return trueValue.getType().toString();
     }
 
     @Override

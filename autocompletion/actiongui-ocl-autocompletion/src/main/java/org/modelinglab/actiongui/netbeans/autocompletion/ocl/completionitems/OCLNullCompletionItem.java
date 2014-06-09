@@ -19,14 +19,9 @@ public class OCLNullCompletionItem extends OCLCompletionItem{
     private final VoidValue voidValue;
     
     public OCLNullCompletionItem(String prefix, int caretOffset) {
-        super(prefix, caretOffset); 
+        super(prefix, caretOffset, 0); 
         this.voidValue = VoidValue.instantiate();
         assert voidValue.toString().startsWith(prefix);
-    }
-
-    @Override
-    public int getSortPriority() {
-        return 0;
     }
 
     @Override

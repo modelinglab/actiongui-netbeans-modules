@@ -19,15 +19,10 @@ public class OCLUmlClassCompletionItem extends OCLCompletionItem{
     private final UmlClass ucmlClass;
 
     public OCLUmlClassCompletionItem(UmlClass umlClass, String prefix, int caretOffset) {
-        super(prefix, caretOffset);  
+        super(prefix, caretOffset, 4);  
         assert umlClass.getName().startsWith(prefix);
         this.ucmlClass = umlClass;
     }        
-
-    @Override
-    public int getSortPriority() {
-        return 4;
-    }
 
     @Override
     public CharSequence getSortText() {

@@ -21,18 +21,13 @@ public class OCLIteratorCompletionItem extends OCLCompletionItem{
     private final String nameItVar;
 
     public OCLIteratorCompletionItem(String nameIterator, String returnedType, String bodyType, String prefix, int caretOffset, String nameItVar) {
-        super(prefix, caretOffset);
+        super(prefix, caretOffset, 2);
         assert nameIterator.startsWith(prefix);
         this.nameIterator = nameIterator;
         this.returnedType = returnedType;
         this.bodyType = bodyType;
         this.nameItVar = nameItVar;
     }        
-
-    @Override
-    public int getSortPriority() {
-        return 2;
-    }
 
     @Override
     public CharSequence getSortText() {

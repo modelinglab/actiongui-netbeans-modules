@@ -17,7 +17,9 @@ import org.modelinglab.ocl.core.ast.StaticEnvironment;
 import org.modelinglab.ocl.core.ast.UmlClass;
 import org.modelinglab.ocl.core.ast.UmlEnum;
 import org.modelinglab.ocl.core.ast.annotations.EntityAnnotation;
+import org.modelinglab.ocl.core.ast.types.Classifier;
 import org.modelinglab.ocl.core.ast.types.PrimitiveType;
+import org.modelinglab.ocl.core.standard.OclStandardOperations;
 import org.modelinglab.ocl.core.standard.operations.bag.IsEqual;
 import org.modelinglab.ocl.core.standard.operations.bool.And;
 import org.modelinglab.ocl.core.standard.operations.bool.Implies;
@@ -154,7 +156,7 @@ public class OCLAutocompletionUtils {
         return true;                
     }
 
-    public static boolean isOtherOperation(Operation op) {
+    public static boolean isInfixOperation(Operation op) {
         if (isDotOrArrowOperation(op)) {
             return false;
         }
@@ -164,6 +166,27 @@ public class OCLAutocompletionUtils {
         }
         
         return true;
+    }
+    
+    public static Set<Operation> getOperationsByName(StaticEnvironment env, String nameOp) {
+        Set<Operation> operationsByName = new HashSet<>();
+        Iterator<Operation> operations = OclStandardOperations.getInstance().iterator();
+        while(operations.hasNext()) {
+            Operation operation = operations.next();
+            if(operation.getName().equals(nameOp)) {
+                operationsByName.add(operation);
+            }
+        }
+        return operationsByName;
+    }
+    
+    public static Set<Operation> getInfixOperations(StaticEnvironment env, Classifier sourceType, String nameOp) {
+        Set<Operation> infixOperations = new HashSet<>();
+        Iterator<Operation> operations = env.getOpStore().getOperations(sourceType, nameOp);
+        while(operations.hasNext()) {
+            infixOperations.add(operations.next());
+        }
+        return infixOperations;
     }
     
     public static Set<Operation> getPrefixOperations(StaticEnvironment env) {
@@ -188,6 +211,40 @@ public class OCLAutocompletionUtils {
             Operation op = negativeRealOperations.next();
             if(op.getOwnedParameters().isEmpty()) {
                 prefixOperations.add(op);
+            }
+        }
+        
+        return prefixOperations;
+    }
+    
+    public static Set<Operation> getPrefixOperations(StaticEnvironment env, String opName) {
+        OperationsStore opStore = env.getOpStore();
+        Set<Operation> prefixOperations = new HashSet<>();
+        Iterator<Operation> notOperations = opStore.getOperations(PrimitiveType.BOOLEAN, "not");
+        while(notOperations.hasNext()) {
+            Operation op = notOperations.next();
+            if(op.getOwnedParameters().isEmpty()) {
+                if(op.getName().equals(opName)) {
+                    prefixOperations.add(op);
+                }
+            }
+        }
+        Iterator<Operation> negativeIntegerOperations = opStore.getOperations(PrimitiveType.INTEGER, "-");
+        while(negativeIntegerOperations.hasNext()) {
+            Operation op = negativeIntegerOperations.next();
+            if(op.getOwnedParameters().isEmpty()) {
+                if(op.getName().equals(opName)) {
+                    prefixOperations.add(op);
+                }
+            }
+        }
+        Iterator<Operation> negativeRealOperations = opStore.getOperations(PrimitiveType.REAL, "-");
+        while(negativeRealOperations.hasNext()) {
+            Operation op = negativeRealOperations.next();
+            if(op.getOwnedParameters().isEmpty()) {
+                if(op.getName().equals(opName)) {
+                    prefixOperations.add(op);
+                }
             }
         }
         

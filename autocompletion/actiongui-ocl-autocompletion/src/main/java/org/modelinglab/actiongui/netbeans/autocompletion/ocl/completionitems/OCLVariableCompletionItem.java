@@ -19,15 +19,10 @@ public class OCLVariableCompletionItem extends OCLCompletionItem{
     private final Variable variable;
 
     public OCLVariableCompletionItem(Variable variable, String prefix, int caretOffset) {
-        super(prefix, caretOffset);
+        super(prefix, caretOffset, 2);
         assert variable.getName().startsWith(prefix);
         this.variable = variable;
     }            
-
-    @Override
-    public int getSortPriority() {
-        return 2;
-    }
 
     @Override
     public CharSequence getSortText() {

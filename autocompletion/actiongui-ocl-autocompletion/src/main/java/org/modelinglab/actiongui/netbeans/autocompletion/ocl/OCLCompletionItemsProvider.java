@@ -9,6 +9,7 @@ package org.modelinglab.actiongui.netbeans.autocompletion.ocl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -16,6 +17,7 @@ import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCL
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLDotOrArrowOperationCompletionItem;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLEntityCompletionItem;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLEnumLiteralCompletionItem;
+import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLFalseCompletionItem;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLIfThenElseCompletionItem;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLInvalidCompletionItem;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLIteratorCompletionItem;
@@ -23,6 +25,7 @@ import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCL
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLOtherOperationCompletionItem;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLPrefixOperationCompletionItem;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLPropertyCompletionItem;
+import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLTrueCompletionItem;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLUmlClassCompletionItem;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.completionitems.OCLVariableCompletionItem;
 import org.modelinglab.actiongui.netbeans.autocompletion.ocl.exceptions.OCLAutocompletionException;
@@ -43,6 +46,7 @@ import org.modelinglab.ocl.core.ast.types.CollectionType;
 import org.modelinglab.ocl.core.ast.types.PrimitiveType;
 import org.modelinglab.ocl.core.exceptions.OclException;
 import org.modelinglab.ocl.core.standard.OclStandardIterators;
+import org.modelinglab.ocl.core.values.BooleanValue;
 import org.modelinglab.ocl.core.values.InvalidValue;
 import org.modelinglab.ocl.core.values.VoidValue;
 import org.modelinglab.ocl.parser.OclLexerException;
@@ -54,7 +58,8 @@ import org.modelinglab.ocl.parser.OclParserException;
  * @author Miguel Angel Garcia de Dios <miguelangel.garcia at imdea.org>
  */
 public class OCLCompletionItemsProvider {
-    boolean forXML;
+    private final boolean forXML;
+    private final int NUM_MAX_COMPLETION_KINDS = 50;
     
     public OCLCompletionItemsProvider() {
         this.forXML = false;
@@ -191,8 +196,10 @@ public class OCLCompletionItemsProvider {
      * @return 
      */
     private Collection<OCLCompletionItem> analyzeInitExprOrOtherOperatorCase(StringBuilder sb, int caretOffset, OclParser parser) {
-        StringBuilder expBeforeOperator = new StringBuilder("");
+        OCLAutocompletionUtils.removeWhiteSpacesWrappingOperators(sb);
+        StringBuilder subExpressionBefore = new StringBuilder("");
         StringBuilder accumulator = new StringBuilder("");
+        List<Classifier> validTypes = new ArrayList<>();
         
         // 1) Build the accumulator
         while (sb.length() > 0) {
@@ -205,7 +212,7 @@ public class OCLCompletionItemsProvider {
         accumulator = accumulator.reverse();
         // if there are no more text, we are in init_expr case
         if(sb.length() == 0) {
-            Collection<OCLCompletionItem> completionItems = buildInitExprCompletionItems(accumulator.toString(), parser, caretOffset);
+            Collection<OCLCompletionItem> completionItems = buildInitExprCompletionItems(validTypes, accumulator.toString(), parser, caretOffset);
             return completionItems;
         }
         
@@ -213,13 +220,11 @@ public class OCLCompletionItemsProvider {
         OCLAutocompletionUtils.removeTailWhiteSpaces(sb);
         // if there are no more text, we are in init_expr case
         if(sb.length() == 0) {
-            Collection<OCLCompletionItem> completionItems = buildInitExprCompletionItems(accumulator.toString(), parser, caretOffset);
+            Collection<OCLCompletionItem> completionItems = buildInitExprCompletionItems(validTypes, accumulator.toString(), parser, caretOffset);
             return completionItems;
         }
 
-        // 3) find the source operator expression
-        OCLAutocompletionUtils.removeTailWhiteSpaces(sb);
-        OCLAutocompletionUtils.removeWhiteSpacesWrappingOperators(sb);
+        // 3) find the sub-expression before
         int numOpenParenthesis = 0;
         int numOpenBrakets = 0;
         while(sb.length() > 0){
@@ -251,29 +256,86 @@ public class OCLCompletionItemsProvider {
                     break;
                 }
             }
-            expBeforeOperator.append(charAt);
+            subExpressionBefore.append(charAt);
             sb = sb.deleteCharAt(sb.length()-1);
         }
-        expBeforeOperator = expBeforeOperator.reverse();
+        subExpressionBefore = subExpressionBefore.reverse();
         // if sub expression before caret position is empty, we are in init_expr case 
-        if(expBeforeOperator.length() == 0) {
-            Collection<OCLCompletionItem> completionItems = buildInitExprCompletionItems(accumulator.toString(), parser, caretOffset);
+        if(subExpressionBefore.length() == 0) {
+            Collection<OCLCompletionItem> completionItems = buildInitExprCompletionItems(validTypes, accumulator.toString(), parser, caretOffset);
             return completionItems;
         }
-        
-        // 3) Parse the source operator expression
-        OclExpression expBO;
+
+        // 4) Check if the sub expression before parses
+        boolean hasParsed = false;
+        OclExpression expBO = null;
         try {
-            expBO = parser.parse(expBeforeOperator.toString());
+            expBO = parser.parse(subExpressionBefore.toString());
+            hasParsed = true;
         }
-        // If the expression does not parse, then we are in init_expr case
         catch (OclParserException | OclLexerException | IOException | OclException ex) {
-            Collection<OCLCompletionItem> completionItems = buildInitExprCompletionItems(accumulator.toString(), parser, caretOffset);
+        }
+        
+        // 5) If the sub-expression parses, then sub-expression is <valid-exp accumulator>
+        // Then we have to provided the infix operations that satisfy both, the type of sub-expression before, and the accumulator
+        if(hasParsed) {
+            Collection<OCLCompletionItem> completionItems = buildInfixOperationCompletionItems(expBO, accumulator.toString(), parser, caretOffset);
             return completionItems;
         }
         
-        // in this case, we have a sub expression before caret position, so we are in other operator case
-        Collection<OCLCompletionItem> completionItems = buildOtherOperatorCompletionItems(expBO, accumulator.toString(), parser, caretOffset);
+        // 6) The sub-expression before does not parse, we are in case <expression_head possibly-prefix-or-infix-op accumulator>
+        // Delete all initial whitespaces
+        StringBuilder operator = new StringBuilder();
+        OCLAutocompletionUtils.removeTailWhiteSpaces(subExpressionBefore);
+        // try to get the operator
+        numOpenParenthesis = 0;
+        numOpenBrakets = 0;
+        while(subExpressionBefore.length() > 0){
+            char charAt = subExpressionBefore.charAt(subExpressionBefore.length()-1);
+            if(charAt == ')') {
+                numOpenParenthesis++;
+            }
+            else if(charAt == '}'){
+                numOpenBrakets++;
+            }
+            else if(charAt == '(') {
+                if(numOpenParenthesis > 0) {
+                    numOpenParenthesis--;
+                }
+                else {
+                    break;
+                }
+            }
+            else if(charAt == '{') {
+                if(numOpenBrakets > 0) {
+                    numOpenBrakets--;
+                }
+                else {
+                    break;
+                }
+            }
+            else if(Character.isWhitespace(charAt) || charAt == ',' || charAt == '|') {
+                if(!((numOpenParenthesis + numOpenBrakets) > 0)) {
+                    break;
+                }
+            }
+            operator.append(charAt);
+            subExpressionBefore = subExpressionBefore.deleteCharAt(subExpressionBefore.length()-1);
+        }
+        operator = operator.reverse();
+        // if operator is empty, we are in init_expr case 
+        if(operator.length() == 0) {
+            Collection<OCLCompletionItem> completionItems = buildInitExprCompletionItems(validTypes, accumulator.toString(), parser, caretOffset);
+            return completionItems;
+        }
+
+        // 7) If operator is not empty, we are in case <expression_head possibly-prefix-or-infix-op accumulator>
+        // Then get the available types for accumulator taking into account the possibly-prefix-op
+        Set<Operation> operations = OCLAutocompletionUtils.getOperationsByName(parser.getEnv(), operator.toString());
+        for (Operation operation : operations) {
+            validTypes.add(operation.getType());
+        }
+        Collection<OCLCompletionItem> completionItems = buildInitExprCompletionItems(validTypes, accumulator.toString(), parser, caretOffset);
         return completionItems;
     }   
     
@@ -422,7 +484,7 @@ public class OCLCompletionItemsProvider {
         return completionItems;
     }
 
-    private Collection<OCLCompletionItem> buildOtherOperatorCompletionItems(OclExpression sourceExpr, String accumulator, OclParser parser, int caretOffset) {
+    private Collection<OCLCompletionItem> buildInfixOperationCompletionItems(OclExpression sourceExpr, String accumulator, OclParser parser, int caretOffset) {
         Collection<OCLCompletionItem> completionItems = new ArrayList<>();
         
         // 1) get the type of the source expr
@@ -436,7 +498,7 @@ public class OCLCompletionItemsProvider {
         Iterator<Operation> operations = opStore.getOperations(typeSourceExpr, null);
         while(operations.hasNext()) {
             Operation op = operations.next();
-            if(!OCLAutocompletionUtils.isOtherOperation(op)) {
+            if(!OCLAutocompletionUtils.isInfixOperation(op)) {
                 continue;
             }
             String name = op.getName();
@@ -450,22 +512,30 @@ public class OCLCompletionItemsProvider {
         return completionItems;
     }
 
-    private Collection<OCLCompletionItem> buildInitExprCompletionItems(String accumulator, OclParser parser, int caretOffset) {
+    private Collection<OCLCompletionItem> buildInitExprCompletionItems(List<Classifier> validTypes, String accumulator, OclParser parser, int caretOffset) {
         Collection<OCLCompletionItem> completionItems = new ArrayList<>();
         StaticEnvironment env = parser.getEnv();
         
-        // 1) Add if statement, null and invalid literals.
+        // 1) Add if statement, true, false, null and invalid literals.
         if("if".startsWith(accumulator)) {
             OCLIfThenElseCompletionItem item = new OCLIfThenElseCompletionItem(accumulator, caretOffset);
-            completionItems.add(item);
+            addCompletionItem(completionItems, item, null, validTypes);
         }
         if(VoidValue.instantiate().toString().startsWith(accumulator)) {
             OCLNullCompletionItem item = new OCLNullCompletionItem(accumulator, caretOffset);
-            completionItems.add(item);
+            addCompletionItem(completionItems, item, VoidValue.instantiate().getType(), validTypes);
         }
         if(InvalidValue.instantiate().toString().startsWith(accumulator)) {
             OCLInvalidCompletionItem item = new OCLInvalidCompletionItem(accumulator, caretOffset);
-            completionItems.add(item);
+            addCompletionItem(completionItems, item, InvalidValue.instantiate().getType(), validTypes);
+        }
+        if(BooleanValue.FALSE.toString().startsWith(accumulator)) {
+            OCLFalseCompletionItem item = new OCLFalseCompletionItem(accumulator, caretOffset);
+            addCompletionItem(completionItems, item, BooleanValue.FALSE.getType(), validTypes);
+        }
+        if(BooleanValue.TRUE.toString().startsWith(accumulator)) {
+            OCLTrueCompletionItem item = new OCLTrueCompletionItem(accumulator, caretOffset);
+            addCompletionItem(completionItems, item, BooleanValue.TRUE.getType(), validTypes);
         }
         
         // 2) Add all operations with prefix operators. Currently they are: negation "not" and negative "-"
@@ -476,7 +546,7 @@ public class OCLCompletionItemsProvider {
                 continue;
             }
             OCLPrefixOperationCompletionItem item = new OCLPrefixOperationCompletionItem(op, accumulator, caretOffset);
-            completionItems.add(item);
+            addCompletionItem(completionItems, item, op.getType(), validTypes);
         }
         
         // 3) Add all variables
@@ -494,7 +564,7 @@ public class OCLCompletionItemsProvider {
                     continue;
                 }
                 OCLVariableCompletionItem item = new OCLVariableCompletionItem(variable, accumulator, caretOffset);
-                completionItems.add(item);
+                addCompletionItem(completionItems, item, variable.getType(), validTypes);
             }
         }
         
@@ -506,7 +576,7 @@ public class OCLCompletionItemsProvider {
                 continue;
             }
             OCLEntityCompletionItem item = new OCLEntityCompletionItem(entity, accumulator, caretOffset);
-            completionItems.add(item);
+            addCompletionItem(completionItems, item, entity.getClassifierType(), validTypes);
         }
         
         // 5) Add other uml classes that are not entities
@@ -517,7 +587,7 @@ public class OCLCompletionItemsProvider {
                 continue;
             }
             OCLUmlClassCompletionItem item = new OCLUmlClassCompletionItem(umlClass, accumulator, caretOffset);
-            completionItems.add(item);
+            addCompletionItem(completionItems, item, umlClass.getClassifierType(), validTypes);
         }
         
         // 6) Add all enumerations
@@ -530,9 +600,21 @@ public class OCLCompletionItemsProvider {
                     continue;
                 }
                 OCLEnumLiteralCompletionItem item = new OCLEnumLiteralCompletionItem(umlEnumLiteral, accumulator, caretOffset);
-                completionItems.add(item);
+                addCompletionItem(completionItems, item, umlEnum.getClassifierType(), validTypes);
             }
         }
         return completionItems;
+    }
+    
+    private void addCompletionItem(Collection<OCLCompletionItem> completionItems, OCLCompletionItem completionItem, Classifier completionItemType, List<Classifier> validTypes) {
+        if(completionItemType == null) {
+            completionItem.setSortPriority(completionItem.getSortPriority() + NUM_MAX_COMPLETION_KINDS);
+        }
+        else {
+            if(!validTypes.contains(completionItemType)) {
+                completionItem.setSortPriority(completionItem.getSortPriority() + NUM_MAX_COMPLETION_KINDS);
+            }
+        }       
+        completionItems.add(completionItem);
     }
 }
