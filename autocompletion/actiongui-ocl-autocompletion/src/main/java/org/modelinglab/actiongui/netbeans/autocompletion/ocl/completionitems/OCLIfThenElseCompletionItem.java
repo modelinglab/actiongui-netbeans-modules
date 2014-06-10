@@ -22,9 +22,9 @@ public class OCLIfThenElseCompletionItem extends OCLCompletionItem{
     public OCLIfThenElseCompletionItem(String prefix, int caretOffset) {
         super(prefix, caretOffset, 0);
         assert "if".startsWith(prefix);
-        this.leftText = "if <condition_expr>:Boolean then <then_expr>:T else <else_expr>:T endif        ";
+        this.leftText = "if condition_expr:Boolean then then_expr:T else else_expr:T endif        ";
         this.rightText = "T";
-        this.textToInsert = "if <condition_expr> then <then_expr> else <else_expr> endif";
+        this.textToInsert = "if condition_expr then then_expr else else_expr endif";
     }
 
     @Override

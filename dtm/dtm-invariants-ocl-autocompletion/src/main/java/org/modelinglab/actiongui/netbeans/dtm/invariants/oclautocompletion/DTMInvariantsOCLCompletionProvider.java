@@ -109,17 +109,22 @@ public class DTMInvariantsOCLCompletionProvider implements CompletionProvider{
                 // 1) Get the (possibly) XML Invariants file
                 DataObject dob = TopComponent.getRegistry().getActivated().getLookup().lookup(DataObject.class);
                 FileObject fob = dob.getPrimaryFile();
-                URI dtmInvariantsModelURI = fob.toURI();
+                String nameFile = fob.getName();
+                if(!nameFile.endsWith(".inv")) {
+                    completionResultSet.finish();
+                    return;
+                }
                 
                 // 2) Build the XML Invariants model
+                URI dtmInvariantsModelURI = fob.toURI();
                 Itm itm;
                 try {
                     itm = buildDTMInvariantsModel(dtmInvariantsModelURI, document);
                 } 
                 catch (DTMInvariantsOCLAutocompletionException ex) {
                     // If the XML file is not an XML invariant file or contains errors --> hide errors
-                    //String errorMessage = "Error building the invariants model: " + ex.getMessage();
-                    //printError(errorMessage);
+                    String errorMessage = "Error building the invariants model: " + ex.getMessage();
+                    printError(errorMessage);
                     completionResultSet.finish();
                     return;
                 }

@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dtm</artifactId>
         <groupId>org.modelinglab.actiongui.netbeans.dtm</groupId>
-        <version>0.2.3-SNAPSHOT</version>
+        <version>0.2.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>dtm-braces-matcher</artifactId>
