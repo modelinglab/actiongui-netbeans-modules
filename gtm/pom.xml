@@ -4,7 +4,7 @@
     <parent>
         <artifactId>ag-netbeans-modules</artifactId>
         <groupId>org.modelinglab.actiongui.netbeans</groupId>
-        <version>0.2.4-SNAPSHOT</version>
+        <version>0.2.5-SNAPSHOT</version>
     </parent>
     <groupId>org.modelinglab.actiongui.netbeans.gtm</groupId>
     <artifactId>gtm</artifactId>
