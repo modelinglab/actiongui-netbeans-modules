@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.modelinglab.actiongui.netbeans.gtm</groupId>
         <artifactId>gtm</artifactId>
-        <version>0.2.5-SNAPSHOT</version>
+        <version>2.5</version>
     </parent>
     <artifactId>gtm-ocl-autocompletion</artifactId>
     <packaging>nbm</packaging>
@@ -93,13 +93,13 @@
         <dependency>
             <groupId>org.modelinglab.actiongui.netbeans.autocompletion</groupId>
             <artifactId>actiongui-ocl-autocompletion</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>${project.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.modelinglab.actiongui.maven</groupId>
             <artifactId>plugin-tools</artifactId>
-            <version>2.5-SNAPSHOT</version>
+            <version>${project.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
