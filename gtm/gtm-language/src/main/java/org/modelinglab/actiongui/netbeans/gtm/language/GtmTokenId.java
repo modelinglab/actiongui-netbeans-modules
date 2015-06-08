@@ -65,6 +65,7 @@ public enum GtmTokenId implements TokenId {
             case "TButton":
             case "TComboBox":
             case "TDateField":
+            case "TDateTimeField":
             case "TImage":
             case "TLabel":
             case "TPasswordField":
@@ -103,6 +104,7 @@ public enum GtmTokenId implements TokenId {
             case "TOnClick":
             case "TOnCreate":
             case "TOnView":
+            case "TOnChange":
                 return EVENT;
 
             case "TError":
