@@ -51,6 +51,7 @@ public enum StmTokenId implements TokenId {
                 return SEPARATOR;
             case "TExtends":
             case "TRoleTk":
+            case "TConstrainedBy":
                 return KEYWORD;
             case "TCommentBody":
             case "TCommentEnd":
